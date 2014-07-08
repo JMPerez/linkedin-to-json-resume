@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        body {
+        	font-family: FreeSans, Arimo,"Droid Sans",Helvetica,Arial,sans-serif;
+        	padding: 20px;
+        	max-width: 500px;
+        	margin: 0 auto;
+        	text-align: center;
+        }
+        textarea {
+        	width: 100%;
+        	height: 200px;
+        }
+
+        .IN-widget {
+        	margin: 0 auto;
+        	padding: 10px;
+        }
+        </style>
+		<!-- see https://developer.linkedin.com/documents/javascript-api-tutorial -->
+	</head>
+	<body>
+		<h1>LinkedIn to Json Résumé</h1>
+		<p>This is a small website that exports your LinkedIn profile to a <a href="http://jsonresume.org/">JSON Résumé</a>.</p>
+		<p>Log in with your LinkedIn account:</p>
+		<script type="IN/Login"></script>
+		<textarea id="output" placeholder="Here you will see the exported JSON"></textarea>
+		
+		<script>
+
+		var linkedinToJsonResume = function(profile) {
+
+			var bio = {
+				firstName: profile.firstName,
+				lastName: profile.lastName,
+				email: {
+					personal: profile.emailAddress
+				},
+				phone: {
+					work: null,
+					personal: null
+				},
+				summary: profile.summary,
+				location: null
+			};
+
+			var work = profile.positions.values.map(function(p) {
+				return {
+					company: p.company.name,
+					position: p.title,
+					startDate: p.startDate.year + '-' + (p.startDate.month < 10 ? '0' : '') + p.startDate.month,
+					summary: p.summary
+				};
+			});
+
+			var education = profile.educations.values.map(function(e) {
+				return {
+					institution: e.schoolName,
+					startDate: '' + e.startDate.year,
+					endDate: '' + e.endDate.year,
+					area: e.fieldOfStudy,
+					studyType: e.degree
+				};
+			});
+
+			var skills = profile.skills.values.map(function(s) {
+				return {
+					name: s.skill.name
+				};
+			});
+
+			var allData = {
+				bio: bio,
+				work: work,
+				education: education,
+				skills: skills
+			}
+
+			document.getElementById('output').value = JSON.stringify(allData, undefined, 2);
+		}
+
+		var onLinkedInAuth = function() {
+			IN.API.Profile("me")
+				.fields("firstName", "lastName", "industry", "summary", "specialties", "positions", "email-address", "languages", "skills", "educations")
+    			.result(function(data) {
+    				linkedinToJsonResume(data.values[0]);
+	    		});
+		};
+
+		var onLinkedInLoad = function() {
+			IN.Event.on(IN, "auth", onLinkedInAuth);
+		};
+		</script>
+		<script type="text/javascript" src="http://platform.linkedin.com/in.js">
+  			api_key: 77dswa2ycddelm
+			onLoad: onLinkedInLoad
+  			authorize: true
+		</script>
+	</body>
+</html>
