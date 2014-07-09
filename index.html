@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
+        <title>LinkedIn to JSON Resume</title>
+        <meta name="description" content="A web site to export your LinkedIn profile to JSON Resume format">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
         body {
@@ -34,7 +34,6 @@
 		<textarea id="output" placeholder="Here you will see the exported JSON"></textarea>
 		
 		<script>
-
 		var linkedinToJsonResume = function(profile) {
 
 			var bio = {
@@ -43,12 +42,12 @@
 				email: {
 					personal: profile.emailAddress
 				},
-				phone: {
-					work: null,
-					personal: null
-				},
+				phone: { },
 				summary: profile.summary,
-				location: null
+				location: {
+					city: profile.location.name,
+					countryCode: profile.location.country.code.toUpperCase()
+				}
 			};
 
 			var work = profile.positions.values.map(function(p) {
@@ -76,11 +75,19 @@
 				};
 			});
 
+			var references = profile.recommendationsReceived.values.map(function(r) {
+					return {
+						name: r.recommender.firstName + ' ' + r.recommender.lastName,
+						reference: r.recommendationText
+					};
+			});
+
 			var allData = {
 				bio: bio,
 				work: work,
 				education: education,
-				skills: skills
+				skills: skills,
+				references: references
 			}
 
 			document.getElementById('output').value = JSON.stringify(allData, undefined, 2);
@@ -88,7 +95,9 @@
 
 		var onLinkedInAuth = function() {
 			IN.API.Profile("me")
-				.fields("firstName", "lastName", "industry", "summary", "specialties", "positions", "email-address", "languages", "skills", "educations")
+				.fields("firstName", "lastName", "industry", "summary", "specialties",
+					"positions", "email-address", "languages", "skills", "educations",
+					"location:(name,country)", "recommendations-received")
     			.result(function(data) {
     				linkedinToJsonResume(data.values[0]);
 	    		});
