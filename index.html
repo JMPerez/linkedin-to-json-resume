@@ -72,13 +72,17 @@
 					startDate: '' + e.startDate.year,
 					endDate: '' + e.endDate.year,
 					area: e.fieldOfStudy,
-					studyType: e.degree
+					summary: e.notes,
+					studyType: e.degree,
+					courses: []	// even though they are returned through the API, they can't
+								// be tracked back to a school/education entry
 				};
 			});
 
 			var skills = profile.skills.values.map(function(s) {
 				return {
-					name: s.skill.name
+					name: s.skill.name,
+					keywords: []
 				};
 			});
 
