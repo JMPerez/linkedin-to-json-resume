@@ -51,12 +51,19 @@
 			};
 
 			var work = profile.positions.values.map(function(p) {
-				return {
+
+				var object = {
 					company: p.company.name,
 					position: p.title,
 					startDate: p.startDate.year + '-' + (p.startDate.month < 10 ? '0' : '') + p.startDate.month,
 					summary: p.summary
 				};
+
+				if (p.endDate) {
+					object.endDate = p.endDate.year + '-' + (p.endDate.month < 10 ? '0' : '') + p.endDate.month;
+				}
+
+				return object;
 			});
 
 			var education = profile.educations.values.map(function(e) {
