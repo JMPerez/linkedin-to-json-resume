@@ -1,3 +1,4 @@
+var jsonResumeOutput = null;
 var linkedinToJsonResume = function(profile) {
 
 	var basics = {
@@ -77,18 +78,25 @@ var linkedinToJsonResume = function(profile) {
 			};
 	});
 
-	var allData = {
+	jsonResumeOutput = {
 		basics: basics,
 		work: work,
 		education: education,
 		skills: skills,
 		references: references,
 		languages: languages
-	}
+	};
 
-	document.getElementById('output').value = JSON.stringify(allData, undefined, 2);
-}
+	var output = document.getElementById('output');
+	output.innerHTML = JSON.stringify(jsonResumeOutput, undefined, 2);
+	Prism.highlightElement(output);
+};
 
+var downloadButton = document.querySelector('.download');
+downloadButton.addEventListener('click', function() {
+	save(JSON.stringify(jsonResumeOutput, undefined, 2), 'resume.json');
+});
+downloadButton.style.display = 'none';
 var onLinkedInAuth = function() {
 	IN.API.Profile("me")
 		.fields("firstName", "lastName", "industry", "summary", "specialties",
@@ -96,6 +104,7 @@ var onLinkedInAuth = function() {
 			"location:(name,country)", "recommendations-received")
 		.result(function(data) {
 			linkedinToJsonResume(data.values[0]);
+			downloadButton.style.display = 'block';
 		});
 };
 

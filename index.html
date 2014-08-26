@@ -2,43 +2,28 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>LinkedIn to JSON Resume</title>
-        <meta name="description" content="A web site to export your LinkedIn profile to JSON Resume format">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href='http://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-        <style>
-        body {
-        	font-family: Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
-        	padding: 20px;
-        	max-width: 500px;
-        	margin: 0 auto;
-        	text-align: center;
-        }
-        textarea {
-        	width: 100%;
-        	height: 200px;
-        }
-
-        .IN-widget {
-        	margin: 0 auto;
-        	padding: 10px;
-        }
-        </style>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>LinkedIn to JSON Resume</title>
+		<meta name="description" content="A web site to export your LinkedIn profile to JSON Resume format">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link el="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Arimo">
+		<link rel="stylesheet" type="text/css" href="css/basic.css">
+		<link rel="stylesheet" type="text/css" href="css/prism.css">
 		<!-- see https://developer.linkedin.com/documents/javascript-api-tutorial -->
 	</head>
 	<body>
 		<h1>LinkedIn to Json Résumé</h1>
 		<p>This is a small website that exports your LinkedIn profile to a <a href="http://jsonresume.org/">JSON Résumé</a>.</p>
-		<p>Log in with your LinkedIn account:</p>
 		<script type="IN/Login"></script>
-		<textarea id="output" placeholder="Here you will see the exported JSON"></textarea>
-		
-		<script src= "main.js"></script>
+		<pre><code id="output" class="language-javascript"></code></pre>
+		<button class="download">Download as resume.json</button>
 		<script type="text/javascript" src="http://platform.linkedin.com/in.js">
-  			api_key: 77dswa2ycddelm
+			api_key: 77dswa2ycddelm
 			onLoad: onLinkedInLoad
-  			authorize: true
+			authorize: true
 		</script>
+		<script src="js/prism.js" data-manual></script>
+		<script src="js/file.js"></script>
+		<script src="js/main.js"></script>
 	</body>
 </html>
