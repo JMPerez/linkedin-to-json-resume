@@ -19,7 +19,7 @@ var linkedinToJsonResume = function(profile) {
 		profiles: []
 	};
 
-	var work = profile.positions.values.map(function(p) {
+	var work = profile.positions ? profile.positions.values.map(function(p) {
 
 		var object = {
 			company: p.company.name,
@@ -35,9 +35,9 @@ var linkedinToJsonResume = function(profile) {
 		}
 
 		return object;
-	});
+	}) : [];
 
-	var education = profile.educations.values.map(function(e) {
+	var education = profile.educations ? profile.educations.values.map(function(e) {
 
 		var object = {
 			institution: e.schoolName,
@@ -54,29 +54,29 @@ var linkedinToJsonResume = function(profile) {
 		}
 
 		return object;
-	});
+	}) : [];
 
-	var skills = profile.skills.values.map(function(s) {
+	var skills = profile.skills ? profile.skills.values.map(function(s) {
 		return {
 			name: s.skill.name,
 			level: '',
 			keywords: []
 		};
-	});
+	}) : [];
 
-	var languages = profile.languages.values.map(function(l) {
+	var languages = profile.languages ? profile.languages.values.map(function(l) {
 		return {
 			language: l.language.name,
 			fluency: ''
 		};
-	});
+	}) : [];
 
-	var references = profile.recommendationsReceived.values.map(function(r) {
+	var references = profile.recommendationsReceived ? profile.recommendationsReceived.values.map(function(r) {
 			return {
 				name: r.recommender.firstName + ' ' + r.recommender.lastName,
 				reference: r.recommendationText
 			};
-	});
+	}) : [];
 
 	jsonResumeOutput = {
 		basics: basics,
