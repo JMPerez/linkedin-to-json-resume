@@ -3,10 +3,10 @@ var linkedinToJsonResume = function(profile) {
 
 	var basics = {
 		name: profile.firstName + ' ' + profile.lastName,
-		label: '',
-		picture: '',
+		label: profile.headLine,
+		picture: profile.pictureUrl,
 		email: profile.emailAddress,
-		phone: '',
+		phone: profile.phoneNumbers._total ? profile.phoneNumbers[0].phoneNumber : '',
 		website: '',
 		summary: profile.summary,
 		location: {
@@ -19,7 +19,8 @@ var linkedinToJsonResume = function(profile) {
 		profiles: []
 	};
 
-	var work = profile.positions ? profile.positions.values.map(function(p) {
+	var work = profile.positions &&
+			   profile.positions.values ? profile.positions.values.map(function(p) {
 
 		var object = {
 			company: p.company.name,
@@ -37,7 +38,8 @@ var linkedinToJsonResume = function(profile) {
 		return object;
 	}) : [];
 
-	var education = profile.educations ? profile.educations.values.map(function(e) {
+	var education = profile.educations &&
+					profile.educations.values ? profile.educations.values.map(function(e) {
 
 		var object = {
 			institution: e.schoolName,
@@ -56,7 +58,8 @@ var linkedinToJsonResume = function(profile) {
 		return object;
 	}) : [];
 
-	var skills = profile.skills ? profile.skills.values.map(function(s) {
+	var skills = profile.skills &&
+				 profile.skills.values ? profile.skills.values.map(function(s) {
 		return {
 			name: s.skill.name,
 			level: '',
@@ -64,19 +67,34 @@ var linkedinToJsonResume = function(profile) {
 		};
 	}) : [];
 
-	var languages = profile.languages ? profile.languages.values.map(function(l) {
+	var languages = profile.languages &&
+					profile.languages.values ? profile.languages.values.map(function(l) {
 		return {
 			language: l.language.name,
 			fluency: ''
 		};
 	}) : [];
 
-	var references = profile.recommendationsReceived ? profile.recommendationsReceived.values.map(function(r) {
+	var references = profile.recommendationsReceived &&
+					 profile.recommendationsReceived.values ? profile.recommendationsReceived.values.map(function(r) {
 			return {
 				name: r.recommender.firstName + ' ' + r.recommender.lastName,
 				reference: r.recommendationText
 			};
 	}) : [];
+
+	var volunteer = profile.volunteer &&
+					profile.volunteer.values ? profile.volunteer.volunteerExperiences.values.map(function(v) {
+		return {
+			organization: v.organization.name,
+			position: v.role
+			// unfortunately, startDate and endDate are not exposed
+			// see https://developer.linkedin.com/forum/dates-volunteer-experience
+		};
+	}) : [];
+
+	// unfortunately, honors & awards is not exposed at the moment
+	// https://developer.linkedin.com/forum/linked-api-not-returning-honors
 
 	jsonResumeOutput = {
 		basics: basics,
@@ -84,7 +102,8 @@ var linkedinToJsonResume = function(profile) {
 		education: education,
 		skills: skills,
 		references: references,
-		languages: languages
+		languages: languages,
+		volunteer: volunteer
 	};
 
 	var output = document.getElementById('output');
@@ -99,9 +118,10 @@ downloadButton.addEventListener('click', function() {
 downloadButton.style.display = 'none';
 var onLinkedInAuth = function() {
 	IN.API.Profile("me")
-		.fields("firstName", "lastName", "industry", "summary", "specialties",
+		.fields("firstName", "lastName", "headline", "picture-url", "summary", "specialties",
 			"positions", "email-address", "languages", "skills", "educations",
-			"location:(name,country)", "recommendations-received")
+			"location:(name,country)", "recommendations-received", "phone-numbers", "volunteer",
+			"publications", "honors-awards")
 		.result(function(data) {
 			linkedinToJsonResume(data.values[0]);
 			downloadButton.style.display = 'block';
