@@ -6,7 +6,7 @@ var linkedinToJsonResume = function(profile) {
 		label: profile.headLine,
 		picture: profile.pictureUrl,
 		email: profile.emailAddress,
-		phone: profile.phoneNumbers._total ? profile.phoneNumbers[0].phoneNumber : '',
+		phone: profile.phoneNumbers._total ? profile.phoneNumbers.values[0].phoneNumber : '',
 		website: '',
 		summary: profile.summary,
 		location: {
