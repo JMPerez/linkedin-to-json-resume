@@ -26,9 +26,7 @@ var save = (function() {
           // Create Click event
           var clickEvent = document.createEvent("MouseEvent");
           clickEvent.initMouseEvent("click", true, true, window, 0,
-            event.screenX, event.screenY, event.clientX, event.clientY,
-            event.ctrlKey, event.altKey, event.shiftKey, event.metaKey,
-            0, null);
+            0, 0, 0, 0, false, false, false, false, 0, null);
 
           // dispatch click event to simulate download
           a.dispatchEvent(clickEvent);
