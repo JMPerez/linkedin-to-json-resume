@@ -109,7 +109,8 @@ var linkedinToJsonResume = function(profile) {
 		skills: skills,
 		references: references,
 		languages: languages,
-		volunteer: volunteer
+		volunteer: volunteer,
+		awards: awards
 	};
 
 	var output = document.getElementById('output');
