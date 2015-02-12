@@ -93,8 +93,14 @@ var linkedinToJsonResume = function(profile) {
 		};
 	}) : [];
 
-	// unfortunately, honors & awards is not exposed at the moment
-	// https://developer.linkedin.com/forum/linked-api-not-returning-honors
+	var awards = profile.honorsAwards &&
+        profile.honorsAwards.values ? profile.honorsAwards.values.map(function(v) {
+            return {
+                awarder: v.issuer,
+                title: v.name
+                    // unfortunately, startDate and endDate are not exposed
+            };
+        }) : [];
 
 	jsonResumeOutput = {
 		basics: basics,
