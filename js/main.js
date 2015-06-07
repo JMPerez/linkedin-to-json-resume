@@ -1,3 +1,7 @@
+/* global IN, Prism, save */
+/* exported onLinkedInLoad */
+'use strict';
+
 var jsonResumeOutput = null;
 var linkedinToJsonResume = function(profile) {
 
@@ -94,13 +98,13 @@ var linkedinToJsonResume = function(profile) {
 	}) : [];
 
 	var awards = profile.honorsAwards &&
-        profile.honorsAwards.values ? profile.honorsAwards.values.map(function(v) {
-            return {
-                awarder: v.issuer,
-                title: v.name
-                    // unfortunately, startDate and endDate are not exposed
-            };
-        }) : [];
+      profile.honorsAwards.values ? profile.honorsAwards.values.map(function(v) {
+        return {
+          awarder: v.issuer,
+          title: v.name
+          // unfortunately, startDate and endDate are not exposed
+        };
+      }) : [];
 
 	jsonResumeOutput = {
 		basics: basics,
@@ -124,11 +128,11 @@ downloadButton.addEventListener('click', function() {
 });
 downloadButton.style.display = 'none';
 var onLinkedInAuth = function() {
-	IN.API.Profile("me")
-		.fields("firstName", "lastName", "headline", "picture-url", "summary", "specialties",
-			"positions", "email-address", "languages", "skills", "educations",
-			"location:(name,country)", "recommendations-received", "phone-numbers", "volunteer",
-			"publications", "honors-awards")
+	IN.API.Profile('me')
+		.fields('firstName', 'lastName', 'headline', 'picture-url', 'summary', 'specialties',
+			'positions', 'email-address', 'languages', 'skills', 'educations',
+			'location:(name,country)', 'recommendations-received', 'phone-numbers', 'volunteer',
+			'publications', 'honors-awards')
 		.result(function(data) {
 			linkedinToJsonResume(data.values[0]);
 			downloadButton.style.display = 'block';
@@ -136,5 +140,5 @@ var onLinkedInAuth = function() {
 };
 
 var onLinkedInLoad = function() {
-	IN.Event.on(IN, "auth", onLinkedInAuth);
+	IN.Event.on(IN, 'auth', onLinkedInAuth);
 };

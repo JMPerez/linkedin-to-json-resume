@@ -1,5 +1,7 @@
+/* global URL, Blob */
+/* exported save */
 var save = (function() {
-  "use strict";
+  'use strict';
 
   // saveAs from https://gist.github.com/MrSwitch/3552985
   var saveAs = window.saveAs || (window.navigator.msSaveBlob ? function (b, n) {
@@ -17,15 +19,15 @@ var save = (function() {
         var url = URL.createObjectURL(blob);
 
         // Test for download link support
-        if ("download" in document.createElement('a')) {
+        if ('download' in document.createElement('a')) {
 
           var a = document.createElement('a');
           a.setAttribute('href', url);
           a.setAttribute('download', name);
 
           // Create Click event
-          var clickEvent = document.createEvent("MouseEvent");
-          clickEvent.initMouseEvent("click", true, true, window, 0,
+          var clickEvent = document.createEvent('MouseEvent');
+          clickEvent.initMouseEvent('click', true, true, window, 0,
             0, 0, 0, 0, false, false, false, false, 0, null);
 
           // dispatch click event to simulate download
@@ -38,14 +40,14 @@ var save = (function() {
       };
     })();
 
-  function save (text, fileName) {
+  function _save (text, fileName) {
     var blob = new Blob([text], {
       type: 'text/plain'
     });
     saveAs(blob, fileName || 'subtitle.srt');
   }
 
-  return save;
+  return _save;
 
 })();
 
