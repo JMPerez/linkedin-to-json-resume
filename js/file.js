@@ -1,4 +1,4 @@
-/* global URL, Blob */
+/* global URL, Blob, module */
 /* exported save */
 var save = (function() {
   'use strict';
@@ -51,3 +51,4 @@ var save = (function() {
 
 })();
 
+module.exports = save;
