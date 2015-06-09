@@ -1,0 +1,28 @@
+{
+  "name": "linkedin-to-json-resume",
+  "version": "2.0.0",
+  "description": "LinkedIn to JSON Résumé",
+  "main": "js/main.js",
+  "scripts": {
+    "build": "mkdir -p dist && node ./node_modules/browserify/bin/cmd.js -d -e js/main.js -t babelify --outfile dist/output.js",
+    "lint": "./node_modules/jshint/bin/jshint js/*.js",
+    "test": "npm run lint && ./node_modules/mocha/bin/mocha --compilers js:mocha-traceur"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JMPerez/linkedin-to-json-resume.git"
+  },
+  "author": "José M. Pérez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JMPerez/linkedin-to-json-resume/issues"
+  },
+  "homepage": "https://github.com/JMPerez/linkedin-to-json-resume#readme",
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "browserify": "^10.2.4",
+    "jshint": "^2.8.0",
+    "mocha": "^2.2.5",
+    "mocha-traceur": "^2.1.0"
+  }
+}
