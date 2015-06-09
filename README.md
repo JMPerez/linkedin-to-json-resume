@@ -1,6 +1,10 @@
 LinkedIn to JSON Résumé
 =======================
 
+**UPDATE**: Due to some changes in the LinkedIn API the exporter will no longer have access to the user's full profile from LinkedIn nor contact information. Unfortunately there is no way for this app to ask for that data through the LinkedIn OAuth gateway anymore. See https://github.com/JMPerez/linkedin-to-json-resume/issues/10
+
+---
+
 This is a small site that allows you to generate a JSON output compatible with [JSON Résumé](http://jsonresume.org/) (version 0.0.0) from your LinkedIn profile.
 
 Try the demo on [http://jmperezperez.com/linkedin-to-json-resume/](http://jmperezperez.com/linkedin-to-json-resume/)
