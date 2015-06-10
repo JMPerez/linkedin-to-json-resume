@@ -23,7 +23,7 @@ import save from './file.js';
         'location:(name,country)', 'recommendations-received', 'phone-numbers', 'volunteer',
         'publications', 'honors-awards')
       .result(function(data) {
-        var jsonResumeOutput = linkedinToJsonResume.process(data.values[0]);
+        jsonResumeOutput = linkedinToJsonResume.process(data.values[0]);
         var output = document.getElementById('output');
         output.innerHTML = JSON.stringify(jsonResumeOutput, undefined, 2);
         Prism.highlightElement(output);

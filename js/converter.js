@@ -25,14 +25,14 @@ class LinkedInToJsonResume {
       label: source.headline,
       picture: source.pictureUrl,
       email: source.emailAddress,
-      phone: source.phoneNumbers._total ? source.phoneNumbers.values[0].phoneNumber : '',
+      phone: source.phoneNumbers && source.phoneNumbers._total ? source.phoneNumbers.values[0].phoneNumber : '',
       website: '',
       summary: source.summary,
       location: {
         address: '',
         postalCode: '',
-        city: source.location.name,
-        countryCode: source.location.country.code.toUpperCase(),
+        city: source.location ? source.location.name : '',
+        countryCode: source.location ? source.location.country.code.toUpperCase() : '',
         region: ''
       },
       profiles: []
@@ -44,7 +44,7 @@ class LinkedInToJsonResume {
     function processPosition(position) {
       let object = {
         company: position.company.name,
-        position: position.title,
+        position: position.title || '',
         website: '',
         startDate: position.startDate.year + '-' + (position.startDate.month < 10 ? '0' : '') + position.startDate.month + '-01',
         summary: position.summary,

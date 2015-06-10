@@ -1,9 +1,27 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: #2b7bb9;
+  text-decoration: none;
+}
+
+h1, h2, h3, p {
+  margin-bottom: 1em;
+}
+
+main {
+  text-align: center;
+  padding: 20px;
+}
+
 body {
-	font-family: Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
-	padding: 20px;
-	max-width: 700px;
-	margin: 0 auto;
-	text-align: center;
+  font-family: Helvetica, Arial;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 pre {
@@ -30,4 +48,48 @@ pre {
 
 .download:hover {
 	background-color: #7aa93c;
+}
+
+.media, .bd {
+  overflow: hidden;
+  _overflow: visible;
+  zoom: 1;
+}
+
+.about > .media {
+  margin-top: 10px;
+}
+
+.media .img {
+  float: left;
+}
+
+.about .avatar-image {
+  border-radius: 100%;
+  height: 80px;
+  width: 80px;
+  margin-right: 10px;
+}
+
+.about .name {
+  font-weight: bold;
+  font-size: 110%;
+  margin-top: 5px;
+  margin-bottom: 2px;
+}
+
+.twitter {
+  margin-bottom: 3px;
+}
+
+footer {
+  border-top: 1px solid rgba(0,0,0,0.15);
+  padding: 1em;
+}
+
+footer h3 {
+  color: rgba(0,0,0,0.3);
+  text-transform: uppercase;
+  font-size: 80%;
+  margin-bottom: 0.5em;
 }
