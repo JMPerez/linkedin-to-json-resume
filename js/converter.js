@@ -1,30 +1,47 @@
 /* global module */
 /* exported onLinkedInLoad */
 
+// todo: import publications, awards, volunteer
 class LinkedInToJsonResume {
   constructor() {
-
+    this.target = {};
   }
 
-  process(profile) {
-    let target = {};
-    this._processBasics(profile, target);
-    this._processWork(profile, target);
-    this._processEducation(profile, target);
-    this._processSkills(profile, target);
-    this._processLanguages(profile, target);
-    this._processReferences(profile, target);
-    this._processVolunteer(profile, target);
-    this._processAwards(profile, target);
-    return target;
+  getOutput() {
+    // sort the object
+    var propertyOrder = [
+      'basics',
+      'work',
+      'volunteer',
+      'education',
+      'awards',
+      'publications',
+      'skills',
+      'languages',
+      'interests',
+      'references'
+    ];
+
+    var sortedTarget = {};
+    for (var p of propertyOrder) {
+      if (p in this.target) {
+        sortedTarget[p] = this.target[p];
+      }
+    }
+    return sortedTarget;
   }
 
-  _processBasics(source, target) {
-    target.basics = {
+  _extend(target, source) {
+    target = target || {};
+    Object.keys(source).forEach(key => target[key] = source[key]);
+  }
+
+  processProfile(source) {
+    this.target.basics = this.target.basics || {};
+    this._extend(this.target.basics, {
       name: source.firstName + ' ' + source.lastName,
       label: source.headline,
       picture: source.pictureUrl,
-      email: source.emailAddress,
       phone: source.phoneNumbers && source.phoneNumbers._total ? source.phoneNumbers.values[0].phoneNumber : '',
       website: '',
       summary: source.summary,
@@ -36,18 +53,23 @@ class LinkedInToJsonResume {
         region: ''
       },
       profiles: []
-    };
+    });
   }
 
-  _processWork(source, target) {
+  processEmail(source) {
+    this.target.basics = this.target.basics || {};
+    this._extend(this.target.basics, {'email': source.address});
+  }
+
+  processPosition(source) {
 
     function processPosition(position) {
       let object = {
-        company: position.company.name,
+        company: position.company,
         position: position.title || '',
         website: '',
         startDate: position.startDate.year + '-' + (position.startDate.month < 10 ? '0' : '') + position.startDate.month + '-01',
-        summary: position.summary,
+        summary: position.description,
         highlights: []
       };
 
@@ -58,95 +80,59 @@ class LinkedInToJsonResume {
       return object;
     }
 
-    let work = source.positions && source.positions.values ?
-      source.positions.values.map(processPosition) : [];
-
-    target.work = work;
+    this.target.work = source.map(processPosition);
   }
 
-  _processEducation(source, target) {
+  processEducation(source) {
 
     function processEducation(education) {
       let object = {
         institution: education.schoolName,
-        area: education.fieldOfStudy,
+        area: '',
         studyType: education.degree,
-        startDate: '' + education.startDate.year + '-01-01',
+        startDate: '' + education.startDate + '-01-01',
         gpa: '',
-        courses: [] // even though they are returned through the API, they can't
-                    // be tracked back to a school/education entry
+        courses: []
       };
 
       if (education.endDate) {
-        object.endDate = education.endDate.year + '-01-01';
+        object.endDate = education.endDate + '-01-01';
       }
 
       return object;
     }
 
-    let education = source.educations && source.educations.values ?
-      source.educations.values.map(processEducation) : [];
-  
-    target.education = education;
+    this.target.education = source.map(processEducation);
   }
 
-  _processSkills(source, target) {
+  processSkills(skills) {
 
-    let skills = source.skills && source.skills.values ?
-      source.skills.values.map(skill => ({
-        name: skill.skill.name,
+    this.target.skills = skills.map(skill => ({
+        name: skill,
         level: '',
         keywords: []
-      })) : [];
-
-    target.skills = skills;
+      }));
   }
 
-  _processLanguages(source, target) {
+  processLanguages(source) {
 
-    let languages = source.languages &&
-      source.languages.values ? source.languages.values.map(language => ({
-        language: language.language.name,
-        fluency: ''
-      })) : [];
+    function cleanProficiencyString(proficiency) {
+      proficiency = proficiency.toLowerCase().replace(/_/g, ' ');
+      return proficiency[0].toUpperCase() + proficiency.substr(1);
+    }
 
-    target.languages = languages;
+    this.target.languages = source.map(language => ({
+      language: language.name,
+      fluency: cleanProficiencyString(language.proficiency)
+    }));
   }
 
-  _processReferences(source, target) {
+  processReferences(source) {
 
-    let references = source.recommendationsReceived &&
-      source.recommendationsReceived.values ? source.recommendationsReceived.values.map(reference => ({
-        name: reference.recommender.firstName + ' ' + reference.recommender.lastName,
-        reference: reference.recommendationText
-      })) : [];
-
-    target.references = references;
-  }
-
-  _processVolunteer(source, target) {
-
-    let volunteer = source.volunteer && source.volunteer.values ?
-        source.volunteer.volunteerExperiences.values.map(volunteer => ({
-          organization: volunteer.organization.name,
-          position: volunteer.role
-          // unfortunately, startDate and endDate are not exposed
-          // see https://developer.linkedin.com/forum/dates-volunteer-experience
-        })) : [];
-
-    target.volunteer = volunteer;
-  }
-
-  _processAwards(source, target) {
-
-    let awards = source.honorsAwards &&
-        source.honorsAwards.values ? source.honorsAwards.values.map(honorsAward => ({
-          awarder: honorsAward.issuer,
-          title: honorsAward.name
-          // unfortunately, startDate and endDate are not exposed
-        })) : [];
-
-    target.awards = awards;
+    this.target.references = source.map(reference => ({
+      name: reference.recommenderFirstName + ' ' + reference.recommenderLastName,
+      reference: reference.recommendationBody
+    }));
   }
 }
 

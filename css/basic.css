@@ -1,53 +1,33 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-a {
-  color: #2b7bb9;
-  text-decoration: none;
-}
-
-h1, h2, h3, p {
-  margin-bottom: 1em;
-}
-
 main {
-  text-align: center;
-  padding: 20px;
-}
-
-body {
-  font-family: Helvetica, Arial;
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-pre {
-	max-height: 300px;
-	font-size: 85%;
-	margin-bottom: 3em !important;
-}
-
-.IN-widget {
-	margin: 0 auto;
-	padding: 10px;
+  padding-bottom: 1rem;
 }
 
 .download {
-	padding: 10px 30px;
-	background-color: #82b440;
-	color: #fff;
-	font-weight: bold;
-	font-size: 20px;
-	margin: 0 auto;
-	border: 0;
-	cursor: pointer;
+  margin: 1rem auto;
 }
 
-.download:hover {
-	background-color: #7aa93c;
+#filedrag {
+  border: 5px dashed #C4CDF0;
+  border-radius: 7px;
+  cursor: default;
+  color: #333;
+  background-color: #F1F1F4;
+  font-size: 120%;
+  padding: 2em;
+  margin: 0 1em;
+}
+
+#filedrag.hover {
+  color: #333;
+  background-color: #fff;
+}
+
+#fileselect {
+  display: none;
+}
+
+#result {
+  display: none;
 }
 
 .media, .bd {
@@ -92,4 +72,8 @@ footer h3 {
   text-transform: uppercase;
   font-size: 80%;
   margin-bottom: 0.5em;
+}
+
+pre {
+  font-size: 0.8rem !important;
 }

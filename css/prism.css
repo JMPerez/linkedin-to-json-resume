@@ -55,7 +55,8 @@ pre[class*="language-"] {
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-	background: #f5f2f0;
+  border: 2px solid #eee;
+  background-color: #fbfbfb;
 }
 
 /* Inline code */
@@ -93,7 +94,7 @@ pre[class*="language-"] {
 .token.string,
 .token.char,
 .token.builtin {
-	color: #690;
+	color: #333;
 }
 
 .token.operator,
