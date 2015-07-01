@@ -38,6 +38,7 @@ class LinkedInToJsonResume {
 
   processProfile(source) {
     this.target.basics = this.target.basics || {};
+    console.log(source);
     this._extend(this.target.basics, {
       name: source.firstName + ' ' + source.lastName,
       label: source.headline,
@@ -46,7 +47,7 @@ class LinkedInToJsonResume {
       website: '',
       summary: source.summary,
       location: {
-        address: '',
+        address: source.address,
         postalCode: '',
         city: source.location ? source.location.name : '',
         countryCode: source.location ? source.location.country.code.toUpperCase() : '',
@@ -65,7 +66,7 @@ class LinkedInToJsonResume {
 
     function processPosition(position) {
       let object = {
-        company: position.company,
+        company: position.companyName,
         position: position.title || '',
         website: '',
         startDate: position.startDate.year + '-' + (position.startDate.month < 10 ? '0' : '') + position.startDate.month + '-01',
