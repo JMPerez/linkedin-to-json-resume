@@ -38,7 +38,6 @@ class LinkedInToJsonResume {
 
   processProfile(source) {
     this.target.basics = this.target.basics || {};
-    console.log(source);
     this._extend(this.target.basics, {
       name: source.firstName + ' ' + source.lastName,
       label: source.headline,
