@@ -1,25 +1,28 @@
-// ref: http://stackoverflow.com/a/1293163/2343
-// This will parse a delimited string into an array of
-// arrays. The default delimiter is the comma, but this
-// can be overriden in the second argument.
-function CSVToArray( strData, strDelimiter ){
+/* global module */
+(function() {
+  'use strict';
+  // ref: http://stackoverflow.com/a/1293163/2343
+  // This will parse a delimited string into an array of
+  // arrays. The default delimiter is the comma, but this
+  // can be overriden in the second argument.
+  function CSVToArray( strData, strDelimiter ){
     // Check to see if the delimiter is defined. If not,
     // then default to comma.
-    strDelimiter = (strDelimiter || ",");
+    strDelimiter = (strDelimiter || ',');
 
     // Create a regular expression to parse the CSV values.
     var objPattern = new RegExp(
         (
             // Delimiters.
-            "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+            '(\\' + strDelimiter + '|\\r?\\n|\\r|^)' +
 
             // Quoted fields.
-            "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+            '(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|' +
 
             // Standard fields.
-            "([^\"\\" + strDelimiter + "\\r\\n]*))"
+            '([^\"\\' + strDelimiter + '\\r\\n]*))'
         ),
-        "gi"
+        'gi'
         );
 
 
@@ -31,10 +34,11 @@ function CSVToArray( strData, strDelimiter ){
     // matching groups.
     var arrMatches = null;
 
-
     // Keep looping over the regular expression matches
     // until we can no longer find a match.
-    while (arrMatches = objPattern.exec( strData )){
+    do {
+      arrMatches = objPattern.exec( strData );
+      if (!arrMatches) { break; }
 
         // Get the delimiter that was found.
         var strMatchedDelimiter = arrMatches[ 1 ];
@@ -64,8 +68,8 @@ function CSVToArray( strData, strDelimiter ){
             // We found a quoted value. When we capture
             // this value, unescape any double quotes.
             strMatchedValue = arrMatches[ 2 ].replace(
-                new RegExp( "\"\"", "g" ),
-                "\""
+                new RegExp( '\"\"', 'g' ),
+                '\"'
                 );
 
         } else {
@@ -79,9 +83,10 @@ function CSVToArray( strData, strDelimiter ){
         // Now that we have our value string, let's add
         // it to the data array.
         arrData[ arrData.length - 1 ].push( strMatchedValue ? strMatchedValue.trim() : strMatchedValue );
-    }
+      } while (true);
 
     // Return the parsed data.
-    return( arrData );
-}
-module.exports = CSVToArray;
+    return arrData;
+  }
+  module.exports = CSVToArray;
+})();
