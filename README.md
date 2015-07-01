@@ -1,6 +1,5 @@
-LinkedIn to JSON Résumé
+LinkedIn to JSON Résumé [![Build Status](https://travis-ci.org/JMPerez/linkedin-to-json-resume.svg?branch=gh-pages)](https://travis-ci.org/JMPerez/linkedin-to-json-resume)
 =======================
-
 
 This is a small site that allows you to generate a JSON output compatible with [JSON Résumé](http://jsonresume.org/) (version 0.0.0) from your LinkedIn profile.
 
