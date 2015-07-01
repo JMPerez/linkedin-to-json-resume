@@ -44,13 +44,14 @@
 
   var appendABViewSupported;
   try {
-    appendABViewSupported = new Blob([ new DataView(new ArrayBuffer(0)) ]).size === 0;
+    appendABViewSupported = new Blob([new DataView(new ArrayBuffer(0))]).size === 0;
   } catch (e) {
   }
 
   function Crc32() {
     this.crc = -1;
   }
+
   Crc32.prototype.append = function append(data) {
     var crc = this.crc | 0, table = this.table;
     for (var offset = 0, len = data.length | 0; offset < len; offset++)
@@ -67,15 +68,17 @@
       for (j = 0; j < 8; j++)
         if (t & 1)
           t = (t >>> 1) ^ 0xEDB88320;
-        else
-          t = t >>> 1;
+      else
+        t = t >>> 1;
       table[i] = t;
     }
+
     return table;
   })();
   
   // "no-op" codec
   function NOOP() {}
+
   NOOP.prototype.append = function append(bytes, onprogress) {
     return bytes;
   };
@@ -101,9 +104,9 @@
     if (bytes)
       dataArray.set(bytes, 0);
     return {
-      buffer : dataBuffer,
-      array : dataArray,
-      view : new DataView(dataBuffer)
+      buffer: dataBuffer,
+      array: dataArray,
+      view: new DataView(dataBuffer)
     };
   }
 
@@ -115,8 +118,8 @@
     var that = this, blobReader;
 
     function init(callback, onerror) {
-      var blob = new Blob([ text ], {
-        type : TEXT_PLAIN
+      var blob = new Blob([text], {
+        type: TEXT_PLAIN
       });
       blobReader = new BlobReader(blob);
       blobReader.init(function() {
@@ -133,6 +136,7 @@
     that.init = init;
     that.readUint8Array = readUint8Array;
   }
+
   TextReader.prototype = new Reader();
   TextReader.prototype.constructor = TextReader;
 
@@ -163,6 +167,7 @@
     that.init = init;
     that.readUint8Array = readUint8Array;
   }
+
   Data64URIReader.prototype = new Reader();
   Data64URIReader.prototype.constructor = Data64URIReader;
 
@@ -191,6 +196,7 @@
     that.init = init;
     that.readUint8Array = readUint8Array;
   }
+
   BlobReader.prototype = new Reader();
   BlobReader.prototype.constructor = BlobReader;
 
@@ -198,6 +204,7 @@
 
   function Writer() {
   }
+
   Writer.prototype.getData = function(callback) {
     callback(this.data);
   };
@@ -207,14 +214,14 @@
 
     function init(callback) {
       blob = new Blob([], {
-        type : TEXT_PLAIN
+        type: TEXT_PLAIN
       });
       callback();
     }
 
     function writeUint8Array(array, callback) {
-      blob = new Blob([ blob, appendABViewSupported ? array : array.buffer ], {
-        type : TEXT_PLAIN
+      blob = new Blob([blob, appendABViewSupported ? array : array.buffer], {
+        type: TEXT_PLAIN
       });
       callback();
     }
@@ -232,6 +239,7 @@
     that.writeUint8Array = writeUint8Array;
     that.getData = getData;
   }
+
   TextWriter.prototype = new Writer();
   TextWriter.prototype.constructor = TextWriter;
 
@@ -265,6 +273,7 @@
     that.writeUint8Array = writeUint8Array;
     that.getData = getData;
   }
+
   Data64URIWriter.prototype = new Writer();
   Data64URIWriter.prototype.constructor = Data64URIWriter;
 
@@ -273,14 +282,14 @@
 
     function init(callback) {
       blob = new Blob([], {
-        type : contentType
+        type: contentType
       });
       callback();
     }
 
     function writeUint8Array(array, callback) {
-      blob = new Blob([ blob, appendABViewSupported ? array : array.buffer ], {
-        type : contentType
+      blob = new Blob([blob, appendABViewSupported ? array : array.buffer], {
+        type: contentType
       });
       callback();
     }
@@ -293,6 +302,7 @@
     that.writeUint8Array = writeUint8Array;
     that.getData = getData;
   }
+
   BlobWriter.prototype = new Writer();
   BlobWriter.prototype.constructor = BlobWriter;
 
@@ -314,10 +324,11 @@
     function onmessage(event) {
       var message = event.data, data = message.data, err = message.error;
       if (err) {
-        err.toString = function () { return 'Error: ' + this.message; };
+        err.toString = function() { return 'Error: ' + this.message; };
         onreaderror(err);
         return;
       }
+
       if (message.sn !== sn)
         return;
       if (typeof message.codecTime === 'number')
@@ -364,7 +375,7 @@
         reader.readUint8Array(offset + index, Math.min(CHUNK_SIZE, size - index), function(array) {
           if (onprogress)
             onprogress(index, size);
-          var msg = index === 0 ? initialMessage : {sn : sn};
+          var msg = index === 0 ? initialMessage : {sn: sn};
           msg.type = 'append';
           msg.data = array;
           worker.postMessage(msg, [array.buffer]);
@@ -403,6 +414,7 @@
             onreaderror(e);
             return;
           }
+
           if (outputData) {
             outputSize += outputData.length;
             writer.writeUint8Array(outputData, function() {
@@ -415,6 +427,7 @@
             chunkIndex++;
             setTimeout(step, 1);
           }
+
           if (crcInput)
             crc.append(inputData);
           if (onprogress)
@@ -427,6 +440,7 @@
           onreaderror(e);
           return;
         }
+
         if (outputData) {
           if (crcOutput)
             crc.append(outputData);
@@ -485,7 +499,7 @@
   // ZipReader
 
   function decodeASCII(str) {
-    var i, out = "", charCode, extendedASCII = [ '\u00C7', '\u00FC', '\u00E9', '\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA', '\u00EB',
+    var i, out = "", charCode, extendedASCII = ['\u00C7', '\u00FC', '\u00E9', '\u00E2', '\u00E4', '\u00E0', '\u00E5', '\u00E7', '\u00EA', '\u00EB',
         '\u00E8', '\u00EF', '\u00EE', '\u00EC', '\u00C4', '\u00C5', '\u00C9', '\u00E6', '\u00C6', '\u00F4', '\u00F6', '\u00F2', '\u00FB', '\u00F9',
         '\u00FF', '\u00D6', '\u00DC', '\u00F8', '\u00A3', '\u00D8', '\u00D7', '\u0192', '\u00E1', '\u00ED', '\u00F3', '\u00FA', '\u00F1', '\u00D1',
         '\u00AA', '\u00BA', '\u00BF', '\u00AE', '\u00AC', '\u00BD', '\u00BC', '\u00A1', '\u00AB', '\u00BB', '_', '_', '_', '\u00A6', '\u00A6',
@@ -493,7 +507,7 @@
         '\u00C3', '+', '+', '-', '-', '\u00A6', '-', '+', '\u00A4', '\u00F0', '\u00D0', '\u00CA', '\u00CB', '\u00C8', 'i', '\u00CD', '\u00CE',
         '\u00CF', '+', '+', '_', '_', '\u00A6', '\u00CC', '_', '\u00D3', '\u00DF', '\u00D4', '\u00D2', '\u00F5', '\u00D5', '\u00B5', '\u00FE',
         '\u00DE', '\u00DA', '\u00DB', '\u00D9', '\u00FD', '\u00DD', '\u00AF', '\u00B4', '\u00AD', '\u00B1', '_', '\u00BE', '\u00B6', '\u00A7',
-        '\u00F7', '\u00B8', '\u00B0', '\u00A8', '\u00B7', '\u00B9', '\u00B3', '\u00B2', '_', ' ' ];
+        '\u00F7', '\u00B8', '\u00B0', '\u00A8', '\u00B7', '\u00B9', '\u00B3', '\u00B2', '_', ' '];
     for (i = 0; i < str.length; i++) {
       charCode = str.charCodeAt(i) & 0xFF;
       if (charCode > 127)
@@ -501,6 +515,7 @@
       else
         out += String.fromCharCode(charCode);
     }
+
     return out;
   }
 
@@ -534,15 +549,18 @@
       onerror(ERR_ENCRYPTED);
       return;
     }
+
     if (centralDirectory || (entry.bitFlag & 0x0008) != 0x0008) {
       entry.crc32 = data.view.getUint32(index + 10, true);
       entry.compressedSize = data.view.getUint32(index + 14, true);
       entry.uncompressedSize = data.view.getUint32(index + 18, true);
     }
+
     if (entry.compressedSize === 0xFFFFFFFF || entry.uncompressedSize === 0xFFFFFFFF) {
       onerror(ERR_ZIP64);
       return;
     }
+
     entry.filenameLength = data.view.getUint16(index + 22, true);
     entry.extraFieldLength = data.view.getUint16(index + 24, true);
   }
@@ -585,6 +603,7 @@
           onerror(ERR_BAD_FORMAT);
           return;
         }
+
         readCommonHeader(that, data, 4, false, onerror);
         dataOffset = that.offset + 30 + that.filenameLength + that.extraFieldLength;
         writer.init(function() {
@@ -605,6 +624,7 @@
         onerror(ERR_BAD_FORMAT);
         return;
       }
+
       var ZIP_COMMENT_MAX = 256 * 256, EOCDR_MAX = EOCDR_MIN + ZIP_COMMENT_MAX;
 
       // In most cases, the EOCDR is EOCDR_MIN bytes long
@@ -624,6 +644,7 @@
               return;
             }
           }
+
           eocdrNotFoundCallback();
         }, function() {
           onerror(ERR_READ);
@@ -632,8 +653,9 @@
     }
 
     var zipReader = {
-      getEntries : function(callback) {
+      getEntries: function(callback) {
         var worker = this._worker;
+
         // look for End of central directory record
         seekEOCDR(function(dataView) {
           var datalength, fileslength;
@@ -643,6 +665,7 @@
             onerror(ERR_BAD_FORMAT);
             return;
           }
+
           reader.readUint8Array(datalength, reader.size - datalength, function(bytes) {
             var i, index = 0, entries = [], entry, filename, comment, data = getDataHelper(bytes.length, bytes);
             for (i = 0; i < fileslength; i++) {
@@ -652,6 +675,7 @@
                 onerror(ERR_BAD_FORMAT);
                 return;
               }
+
               readCommonHeader(entry, data, index + 6, true, onerror);
               entry.commentLength = data.view.getUint16(index + 32, true);
               entry.directory = ((data.view.getUint8(index + 38) & 0x10) == 0x10);
@@ -666,17 +690,19 @@
               entries.push(entry);
               index += 46 + entry.filenameLength + entry.extraFieldLength + entry.commentLength;
             }
+
             callback(entries);
           }, function() {
             onerror(ERR_READ);
           });
         });
       },
-      close : function(callback) {
+      close: function(callback) {
         if (this._worker) {
           this._worker.terminate();
           this._worker = null;
         }
+
         if (callback)
           callback();
       },
@@ -694,6 +720,7 @@
         function(err) {
           onerror(err);
         }
+
       );
     }
   }
@@ -724,7 +751,7 @@
     }
 
     var zipWriter = {
-      add : function(name, reader, onend, onprogress, options) {
+      add: function(name, reader, onend, onprogress, options) {
         var header, filename, date;
         var worker = this._worker;
 
@@ -733,11 +760,11 @@
           date = options.lastModDate || new Date();
           header = getDataHelper(26);
           files[name] = {
-            headerArray : header.array,
-            directory : options.directory,
-            filename : filename,
-            offset : datalength,
-            comment : getBytes(encodeUTF8(options.comment || ""))
+            headerArray: header.array,
+            directory: options.directory,
+            filename: filename,
+            offset: datalength,
+            comment: getBytes(encodeUTF8(options.comment || ""))
           };
           header.view.setUint32(0, 0x14000808);
           if (options.version)
@@ -763,12 +790,14 @@
             header.view.setUint32(10, crc32, true);
             footer.view.setUint32(4, crc32, true);
           }
+
           if (reader) {
             footer.view.setUint32(8, compressedLength, true);
             header.view.setUint32(14, compressedLength, true);
             footer.view.setUint32(12, reader.size, true);
             header.view.setUint32(18, reader.size, true);
           }
+
           writer.writeUint8Array(footer.array, function() {
             datalength += 16;
             onend();
@@ -784,14 +813,15 @@
             onerror(ERR_DUPLICATED_NAME);
             return;
           }
+
           filename = getBytes(encodeUTF8(name));
           filenames.push(name);
           writeHeader(function() {
             if (reader)
               if (dontDeflate || options.level === 0)
                 copy(worker, deflateSN++, reader, writer, 0, reader.size, true, writeFooter, onprogress, onreaderror, onwriteerror);
-              else
-                deflate(worker, deflateSN++, reader, writer, options.level, writeFooter, onprogress, onreaderror, onwriteerror);
+            else
+              deflate(worker, deflateSN++, reader, writer, options.level, writeFooter, onprogress, onreaderror, onwriteerror);
             else
               writeFooter();
           }, onwriteerror);
@@ -802,7 +832,7 @@
         else
           writeFile();
       },
-      close : function(callback) {
+      close: function(callback) {
         if (this._worker) {
           this._worker.terminate();
           this._worker = null;
@@ -813,6 +843,7 @@
           file = files[filenames[indexFilename]];
           length += 46 + file.filename.length + file.comment.length;
         }
+
         data = getDataHelper(length + 22);
         for (indexFilename = 0; indexFilename < filenames.length; indexFilename++) {
           file = files[filenames[indexFilename]];
@@ -827,6 +858,7 @@
           data.array.set(file.comment, index + 46 + file.filename.length);
           index += 46 + file.filename.length + file.comment.length;
         }
+
         data.view.setUint32(index, 0x504b0506);
         data.view.setUint16(index + 8, filenames.length, true);
         data.view.setUint16(index + 10, filenames.length, true);
@@ -850,6 +882,7 @@
         function(err) {
           onerror(err);
         }
+
       );
     }
   }
@@ -871,6 +904,7 @@
       onerror(new Error('Either zip.workerScripts or zip.workerScriptsPath may be set, not both.'));
       return;
     }
+
     var scripts;
     if (obj.zip.workerScripts) {
       scripts = obj.zip.workerScripts[type];
@@ -878,12 +912,15 @@
         onerror(new Error('zip.workerScripts.' + type + ' is not an array!'));
         return;
       }
+
       scripts = resolveURLs(scripts);
     } else {
       scripts = DEFAULT_WORKER_SCRIPTS[type].slice(0);
       scripts[0] = (obj.zip.workerScriptsPath || '') + scripts[0];
     }
+
     var worker = new Worker(scripts[0]);
+
     // record total consumed time by inflater/deflater/crc32 in this worker
     worker.codecTime = worker.crcTime = 0;
     worker.postMessage({ type: 'importScripts', scripts: scripts.slice(1) });
@@ -895,12 +932,14 @@
         onerror(msg.error);
         return;
       }
+
       if (msg.type === 'importScripts') {
         worker.removeEventListener('message', onmessage);
         worker.removeEventListener('error', errorHandler);
         callback(worker);
       }
     }
+
     // catch entry script loading error and other unhandled errors
     worker.addEventListener('error', errorHandler);
     function errorHandler(err) {
@@ -912,23 +951,24 @@
   function onerror_default(error) {
     alert(error);
   }
+
   obj.zip = {
-    Reader : Reader,
-    Writer : Writer,
-    BlobReader : BlobReader,
-    Data64URIReader : Data64URIReader,
-    TextReader : TextReader,
-    BlobWriter : BlobWriter,
-    Data64URIWriter : Data64URIWriter,
-    TextWriter : TextWriter,
-    createReader : function(reader, callback, onerror) {
+    Reader: Reader,
+    Writer: Writer,
+    BlobReader: BlobReader,
+    Data64URIReader: Data64URIReader,
+    TextReader: TextReader,
+    BlobWriter: BlobWriter,
+    Data64URIWriter: Data64URIWriter,
+    TextWriter: TextWriter,
+    createReader: function(reader, callback, onerror) {
       onerror = onerror || onerror_default;
 
       reader.init(function() {
         createZipReader(reader, callback, onerror);
       }, onerror);
     },
-    createWriter : function(writer, callback, onerror, dontDeflate) {
+    createWriter: function(writer, callback, onerror, dontDeflate) {
       onerror = onerror || onerror_default;
       dontDeflate = !!dontDeflate;
 
@@ -936,12 +976,12 @@
         createZipWriter(writer, callback, onerror, dontDeflate);
       }, onerror);
     },
-    useWebWorkers : true,
+    useWebWorkers: true,
     /**
      * Directory containing the default worker scripts (z-worker.js, deflate.js, and inflate.js), relative to current base url.
      * E.g.: zip.workerScripts = './';
      */
-    workerScriptsPath : null,
+    workerScriptsPath: null,
     /**
      * Advanced option to control which scripts are loaded in the Web worker. If this option is specified, then workerScriptsPath must not be set.
      * workerScripts.deflater/workerScripts.inflater should be arrays of urls to scripts for deflater/inflater, respectively.
@@ -953,7 +993,7 @@
      *   inflater: ['z-worker.js', 'inflate.js']
      * };
      */
-    workerScripts : null,
+    workerScripts: null,
   };
 
 })(this);

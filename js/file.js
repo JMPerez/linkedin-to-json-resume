@@ -4,9 +4,9 @@ var save = (function() {
   'use strict';
 
   // saveAs from https://gist.github.com/MrSwitch/3552985
-  var saveAs = window.saveAs || (window.navigator.msSaveBlob ? function (b, n) {
+  var saveAs = window.saveAs || (window.navigator.msSaveBlob ? function(b, n) {
       return window.navigator.msSaveBlob(b, n);
-    } : false) || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs || (function () {
+    } : false) || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs || (function() {
 
       // URL's
       window.URL = window.URL || window.webkitURL;
@@ -15,7 +15,7 @@ var save = (function() {
         return false;
       }
 
-      return function (blob, name) {
+      return function(blob, name) {
         var url = URL.createObjectURL(blob);
 
         // Test for download link support
@@ -40,7 +40,7 @@ var save = (function() {
       };
     })();
 
-  function _save (text, fileName) {
+  function _save(text, fileName) {
     var blob = new Blob([text], {
       type: 'text/plain'
     });
