@@ -65,7 +65,7 @@ class LinkedInToJsonResume {
 
     function processPosition(position) {
       let object = {
-        company: position.company,
+        company: position.companyName,
         position: position.title || '',
         website: '',
         startDate: position.startDate.year + '-' + (position.startDate.month < 10 ? '0' : '') + position.startDate.month + '-01',
