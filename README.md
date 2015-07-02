@@ -13,11 +13,11 @@ Due to some changes in the LinkedIn API the exporter will no longer have access 
 
 ## Running it locally
 
-Serve the files from `http://localhost` or `http://localhost:8000` which are the SDK Domains registered in the LinkedIn Depelopers page for this app. You don't need to install anything.
+Just start a server and browse the files. You don't need to install anything to run it if you are not going to make changes in the code.
 
 ## Developing
 
-Install the dependencies running
+Install the dependencies running:
 
 `npm install`
 
