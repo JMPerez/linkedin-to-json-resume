@@ -6,7 +6,7 @@
   "scripts": {
     "build": "mkdir -p dist && node ./node_modules/browserify/bin/cmd.js -d -e js/main.js -t babelify --outfile dist/output.js",
     "lint": "./node_modules/jshint/bin/jshint js/*.js",
-    "test": "npm run lint && ./node_modules/mocha/bin/mocha --compilers js:mocha-traceur"
+    "test": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,6 @@
   "devDependencies": {
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
-    "jshint": "^2.8.0",
-    "mocha": "^2.2.5",
-    "mocha-traceur": "^2.1.0"
+    "jshint": "^2.8.0"
   }
 }
