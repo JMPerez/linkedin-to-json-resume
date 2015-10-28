@@ -123,7 +123,7 @@ class LinkedInToJsonResume {
 
     this.target.languages = source.map(language => ({
       language: language.name,
-      fluency: cleanProficiencyString(language.proficiency)
+      fluency: language.proficiency ? cleanProficiencyString(language.proficiency) : null
     }));
   }
 
