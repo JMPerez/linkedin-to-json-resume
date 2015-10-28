@@ -5,7 +5,7 @@ This is a small site that allows you to generate a JSON output compatible with [
 
 You first need to download a copy of your data through [LinkedIn's Data Export Page](https://www.linkedin.com/settings/data-export-page), and then select that file from this project page.
 
-Try the demo on [http://jmperezperez.com/linkedin-to-json-resume/](http://jmperezperez.com/linkedin-to-json-resume/)
+Try the demo on [https://jmperezperez.com/linkedin-to-json-resume/](https://jmperezperez.com/linkedin-to-json-resume/)
 
 ## LinkedIn API?
 
