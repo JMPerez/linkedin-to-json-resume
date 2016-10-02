@@ -183,6 +183,50 @@ import save from './file.js';
                   });
                 });
               });
+
+          case 'Interests.csv':
+            return new Promise(function(resolve) {
+              entry.getData(new zip.BlobWriter('text/plain'), function(blob) {
+                readBlob(blob, function(contents) {
+                  var elements = csvToArray(contents);
+                  var interests = [];
+                  elements.slice(1, elements.length - 1).forEach(function(elem) {
+                   	 interests = interests.concat(elem[0].split(','));
+                  });
+                  linkedinToJsonResume.processInterests(interests);
+                  resolve();
+                });
+              });
+            });
+
+          case 'Projects.csv':
+            return new Promise(function(resolve) {
+              entry.getData(new zip.BlobWriter('text/plain'), function(blob) {
+                readBlob(blob, function(contents) {
+                  var elements = csvToArray(contents);
+                  var projects = elements.slice(1, elements.length - 1).map(function(elem) {
+                    return {
+                      title: elem[0],
+                      startDate: {
+                        year: elem[1].split('/')[1],
+                        month: elem[1].split('/')[0]
+                      },
+                      endDate: elem[2] ? {
+                        year: elem[2].split('/')[1],
+                        month: elem[2].split('/')[0]
+                      } : null,
+                      description: elem[3],
+                      url: elem[4]
+                    };
+                  });
+                  linkedinToJsonResume.processProjects(projects.sort((p1,p2) =>
+                    (+p2.startDate.year - +p1.startDate.year) || (+p2.startDate.month - +p1.startDate.month)
+                  ));
+                  resolve();
+                });
+              });
+            });
+
           default:
             return Promise.resolve([]);
         }
