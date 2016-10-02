@@ -193,7 +193,7 @@ import save from './file.js';
                   elements.slice(1, elements.length - 1).forEach(function(elem) {
                    	 interests.concat(elem[0].split(','));
                   });
-                  linkedinToJsonResume.processLanguages(interests);
+                  linkedinToJsonResume.processInterests(interests);
                   resolve();
                 });
               });
