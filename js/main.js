@@ -191,7 +191,7 @@ import save from './file.js';
                   var elements = csvToArray(contents);
                   var interests = [];
                   elements.slice(1, elements.length - 1).forEach(function(elem) {
-                   	 interests.concat(elem.split(','));
+                   	 interests.concat(elem[0].split(','));
                   });
                   linkedinToJsonResume.processLanguages(interests);
                   resolve();
