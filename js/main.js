@@ -184,6 +184,21 @@ import save from './file.js';
                 });
               });
 
+          case 'Interests.csv':
+            return new Promise(function(resolve) {
+              entry.getData(new zip.BlobWriter('text/plain'), function(blob) {
+                readBlob(blob, function(contents) {
+                  var elements = csvToArray(contents);
+                  var interests = [];
+                  elements.slice(1, elements.length - 1).forEach(function(elem) {
+                   	 interests.concat(elem.split(','));
+                  });
+                  linkedinToJsonResume.processLanguages(interests);
+                  resolve();
+                });
+              });
+            });
+
           case 'Projects.csv':
             return new Promise(function(resolve) {
               entry.getData(new zip.BlobWriter('text/plain'), function(blob) {

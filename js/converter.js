@@ -135,6 +135,14 @@ class LinkedInToJsonResume {
       reference: reference.recommendationBody
     }));
   }
+  
+  processInterests(source) {
+
+    this.target.references = source.map(interest => ({
+      name: interest,
+      keywords: []
+    }));
+  }
 
   processProjects(source) {
 
