@@ -19,7 +19,8 @@ class LinkedInToJsonResume {
       'skills',
       'languages',
       'interests',
-      'references'
+      'references',
+      'projects'
     ];
 
     var sortedTarget = {};
@@ -134,6 +135,26 @@ class LinkedInToJsonResume {
       reference: reference.recommendationBody
     }));
   }
+
+  processProjects(source) {
+
+    function processProjects(project) {
+
+       let p = {
+          name: project.title,
+          startDate: project.startDate,
+          summary: project.description,
+          url: project.url
+        };
+       if(project.endDate) {
+          p.endDate = project.endDate;
+       }
+       return p;
+    }
+    
+    this.target.projects = source.map(processProjects)
+  }
+
 }
 
 module.exports = LinkedInToJsonResume;
