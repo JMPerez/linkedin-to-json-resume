@@ -138,7 +138,7 @@ class LinkedInToJsonResume {
   
   processInterests(source) {
 
-    this.target.references = source.map(interest => ({
+    this.target.interests = source.map(interest => ({
       name: interest,
       keywords: []
     }));
