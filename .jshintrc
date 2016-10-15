@@ -15,9 +15,8 @@
   "regexp": true,
   "undef": true,
   "unused": true,
-  "strict": true,
   "trailing": true,
   "smarttabs": true,
   "maxdepth": 2,
-  "maxcomplexity": 8
+  "maxcomplexity": 10
 }
