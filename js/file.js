@@ -1,12 +1,8 @@
-/* global URL, Blob, module */
+/* global URL, Blob  */
 /* exported save */
-var save = (function() {
-  'use strict';
-
+const save = ((() => {
   // saveAs from https://gist.github.com/MrSwitch/3552985
-  var saveAs = window.saveAs || (window.navigator.msSaveBlob ? function(b, n) {
-      return window.navigator.msSaveBlob(b, n);
-    } : false) || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs || (function() {
+  const saveAs = window.saveAs || (window.navigator.msSaveBlob ? (b, n) => window.navigator.msSaveBlob(b, n) : false) || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs || ((() => {
 
       // URL's
       window.URL = window.URL || window.webkitURL;
@@ -15,18 +11,18 @@ var save = (function() {
         return false;
       }
 
-      return function(blob, name) {
-        var url = URL.createObjectURL(blob);
+      return (blob, name) => {
+        const url = URL.createObjectURL(blob);
 
         // Test for download link support
         if ('download' in document.createElement('a')) {
 
-          var a = document.createElement('a');
+          const a = document.createElement('a');
           a.setAttribute('href', url);
           a.setAttribute('download', name);
 
           // Create Click event
-          var clickEvent = document.createEvent('MouseEvent');
+          const clickEvent = document.createEvent('MouseEvent');
           clickEvent.initMouseEvent('click', true, true, window, 0,
             0, 0, 0, 0, false, false, false, false, 0, null);
 
@@ -38,17 +34,16 @@ var save = (function() {
           window.open(url, '_blank', '');
         }
       };
-    })();
+    }))();
 
   function _save(text, fileName) {
-    var blob = new Blob([text], {
+    const blob = new Blob([text], {
       type: 'text/plain'
     });
     saveAs(blob, fileName || 'subtitle.srt');
   }
 
   return _save;
+}))();
 
-})();
-
-module.exports = save;
+export default save;

@@ -1,4 +1,3 @@
-/* global module */
 /* exported onLinkedInLoad */
 
 // todo: import publications, awards, volunteer
@@ -9,7 +8,7 @@ class LinkedInToJsonResume {
 
   getOutput() {
     // sort the object
-    var propertyOrder = [
+    const propertyOrder = [
       'basics',
       'work',
       'volunteer',
@@ -23,8 +22,8 @@ class LinkedInToJsonResume {
       'projects'
     ];
 
-    var sortedTarget = {};
-    for (var p of propertyOrder) {
+    const sortedTarget = {};
+    for (const p of propertyOrder) {
       if (p in this.target) {
         sortedTarget[p] = this.target[p];
       }
@@ -33,14 +32,14 @@ class LinkedInToJsonResume {
   }
 
   _extend(target, source) {
-    target = target || {};
+    target = target || {};
     Object.keys(source).forEach(key => target[key] = source[key]);
   }
 
   processProfile(source) {
     this.target.basics = this.target.basics || {};
     this._extend(this.target.basics, {
-      name: source.firstName + ' ' + source.lastName,
+      name: `${source.firstName} ${source.lastName}`,
       label: source.headline,
       picture: source.pictureUrl,
       phone: source.phoneNumbers && source.phoneNumbers._total ? source.phoneNumbers.values[0].phoneNumber : '',
@@ -69,13 +68,13 @@ class LinkedInToJsonResume {
         company: position.companyName,
         position: position.title || '',
         website: '',
-        startDate: position.startDate.year + '-' + (position.startDate.month < 10 ? '0' : '') + position.startDate.month + '-01',
+        startDate: `${position.startDate.year}-${position.startDate.month < 10 ? '0' : ''}${position.startDate.month}-01`,
         summary: position.description,
         highlights: []
       };
 
       if (position.endDate) {
-        object.endDate = position.endDate.year + '-' + (position.endDate.month < 10 ? '0' : '') + position.endDate.month + '-01';
+        object.endDate = `${position.endDate.year}-${position.endDate.month < 10 ? '0' : ''}${position.endDate.month}-01`;
       }
 
       return object;
@@ -91,13 +90,13 @@ class LinkedInToJsonResume {
         institution: education.schoolName,
         area: '',
         studyType: education.degree,
-        startDate: '' + education.startDate + '-01-01',
+        startDate: `${education.startDate}-01-01`,
         gpa: '',
         courses: []
       };
 
       if (education.endDate) {
-        object.endDate = education.endDate + '-01-01';
+        object.endDate = `${education.endDate}-01-01`;
       }
 
       return object;
@@ -131,11 +130,11 @@ class LinkedInToJsonResume {
   processReferences(source) {
 
     this.target.references = source.map(reference => ({
-      name: reference.recommenderFirstName + ' ' + reference.recommenderLastName,
+      name: `${reference.recommenderFirstName} ${reference.recommenderLastName}`,
       reference: reference.recommendationBody
     }));
   }
-  
+
   processInterests(source) {
 
     this.target.interests = source.map(interest => ({
@@ -150,19 +149,19 @@ class LinkedInToJsonResume {
 
        let p = {
           name: project.title,
-          startDate: project.startDate.year + '-' + (project.startDate.month < 10 ? '0' : '') + project.startDate.month + '-01',
+          startDate: `${project.startDate.year}-${project.startDate.month < 10 ? '0' : ''}${project.startDate.month}-01`,
           summary: project.description,
           url: project.url
         };
        if(project.endDate) {
-          p.endDate = project.endDate.year + '-' + (project.endDate.month < 10 ? '0' : '') + project.endDate.month + '-01';
+          p.endDate = `${project.endDate.year}-${project.endDate.month < 10 ? '0' : ''}${project.endDate.month}-01`;
        }
        return p;
     }
 
-    this.target.projects = source.map(processProjects)
+    this.target.projects = source.map(processProjects);
   }
 
 }
 
-module.exports = LinkedInToJsonResume;
+export default LinkedInToJsonResume;
