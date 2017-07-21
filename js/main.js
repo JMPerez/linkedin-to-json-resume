@@ -128,16 +128,16 @@ import save from './file.js';
 
           case 'Recommendations Received.csv':
             return readEntryContents(entry).then(contents => {
-              const elements = csvToArray(contents, '\t'); // yes, recommendations use tab-delimiter
+              const elements = csvToArray(contents); 
               const recommendations = elements.slice(1, elements.length - 1).map(elem => ({
-                recommendationDate: elem[0],
-                recommendationBody: elem[1],
-                recommenderFirstName: elem[2],
-                recommenderLastName: elem[3],
+                recommenderFirstName: elem[0],
+                recommenderLastName: elem[1],
+                recommendationDate: elem[2],
+                recommendationBody: elem[3],
                 recommenderCompany: elem[4],
                 recommenderTitle: elem[5],
                 displayStatus: elem[6]
-              })).filter(recommendation => recommendation.displayStatus === 'Shown');
+              })).filter(recommendation => recommendation.displayStatus === 'VISIBLE');
               linkedinToJsonResume.processReferences(recommendations);
               return;
             });
