@@ -130,7 +130,7 @@ class LinkedInToJsonResume {
   processReferences(source) {
 
     this.target.references = source.map(reference => ({
-      name: `${reference.recommenderFirstName} ${reference.recommenderLastName}`,
+      name: `${reference.recommenderFirstName} ${reference.recommenderLastName} - ${reference.recommenderCompany}`,
       reference: reference.recommendationBody
     }));
   }
