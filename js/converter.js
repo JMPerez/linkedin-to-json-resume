@@ -62,19 +62,18 @@ class LinkedInToJsonResume {
   }
 
   processPosition(source) {
-
     function processPosition(position) {
       let object = {
         company: position.companyName,
         position: position.title || '',
         website: '',
-        startDate: `${position.startDate.year}-${position.startDate.month < 10 ? '0' : ''}${position.startDate.month}-01`,
+        startDate: `${position.startDate}`,
         summary: position.description,
         highlights: []
       };
 
       if (position.endDate) {
-        object.endDate = `${position.endDate.year}-${position.endDate.month < 10 ? '0' : ''}${position.endDate.month}-01`;
+        object.endDate = `${position.endDate}`;
       }
 
       return object;
@@ -84,19 +83,18 @@ class LinkedInToJsonResume {
   }
 
   processEducation(source) {
-
     function processEducation(education) {
       let object = {
         institution: education.schoolName,
         area: '',
         studyType: education.degree,
-        startDate: `${education.startDate}-01-01`,
+        startDate: `${education.startDate}`,
         gpa: '',
         courses: []
       };
 
       if (education.endDate) {
-        object.endDate = `${education.endDate}-01-01`;
+        object.endDate = `${education.endDate}`;
       }
 
       return object;
@@ -106,7 +104,6 @@ class LinkedInToJsonResume {
   }
 
   processSkills(skills) {
-
     this.target.skills = skills.map(skill => ({
         name: skill,
         level: '',
@@ -115,7 +112,6 @@ class LinkedInToJsonResume {
   }
 
   processLanguages(source) {
-
     function cleanProficiencyString(proficiency) {
       proficiency = proficiency.toLowerCase().replace(/_/g, ' ');
       return proficiency[0].toUpperCase() + proficiency.substr(1);
@@ -128,7 +124,6 @@ class LinkedInToJsonResume {
   }
 
   processReferences(source) {
-
     this.target.references = source.map(reference => ({
       name: `${reference.recommenderFirstName} ${reference.recommenderLastName} - ${reference.recommenderCompany}`,
       reference: reference.recommendationBody
@@ -136,7 +131,6 @@ class LinkedInToJsonResume {
   }
 
   processInterests(source) {
-
     this.target.interests = source.map(interest => ({
       name: interest,
       keywords: []
@@ -144,17 +138,16 @@ class LinkedInToJsonResume {
   }
 
   processProjects(source) {
-
     function processProjects(project) {
 
        let p = {
           name: project.title,
-          startDate: `${project.startDate.year}-${project.startDate.month < 10 ? '0' : ''}${project.startDate.month}-01`,
+          startDate: `${project.startDate}`,
           summary: project.description,
           url: project.url
         };
        if(project.endDate) {
-          p.endDate = `${project.endDate.year}-${project.endDate.month < 10 ? '0' : ''}${project.endDate.month}-01`;
+          p.endDate = `${project.endDate}`;
        }
        return p;
     }

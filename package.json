@@ -22,5 +22,8 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
     "jshint": "^2.8.0"
+  },
+  "dependencies": {
+    "moment": "^2.18.1"
   }
 }
