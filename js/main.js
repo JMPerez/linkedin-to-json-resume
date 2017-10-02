@@ -3,6 +3,7 @@
 import LinkedInToJsonResume from './converter.js';
 import csvToArray from './csvtoarray.js';
 import save from './file.js';
+import moment from '../vendor/moment.js';
 
 ((() => {
   const filedrag = document.getElementById('filedrag');
@@ -61,10 +62,10 @@ import save from './file.js';
     getEntries(file, entries => {
 
       const promises = entries.map(entry => {
-
-        switch (entry.filename) {
-          case 'Skills.csv':
+        switch (true) {
+          case (entry.filename.indexOf('Skills.csv') !== -1):
             return readEntryContents(entry).then(contents => {
+              // console.log('Skills contents', contents);
               contents = contents.replace(/"/g, '');
               let elements = contents.split('\n');
               elements = elements.slice(1, elements.length -1);
@@ -72,13 +73,13 @@ import save from './file.js';
               return;
             });
 
-          case 'Education.csv':
+          case (entry.filename.indexOf('Education.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
               const education = elements.slice(1, elements.length - 1).map(elem => ({
                 schoolName: elem[0],
-                startDate: elem[1],
-                endDate: elem[2],
+                startDate: moment(elem[1]).format('YYYY-MM-DD'),
+                endDate: moment(elem[2]).format('YYYY-MM-DD'),
                 notes: elem[3],
                 degree: elem[4],
                 activities: elem[5]
@@ -89,33 +90,30 @@ import save from './file.js';
               return;
             });
 
-          case 'Positions.csv':
+          case (entry.filename.indexOf('Positions.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
-              const positions = elements.slice(1, elements.length - 1).map(elem => ({
-                companyName: elem[0],
-                description: elem[1],
-                location: elem[2],
+              const positions = elements.slice(1, elements.length - 1).map(
+                elem => {
+                  return {
+                    companyName: elem[0],
+                    title: elem[1],
+                    description: elem[2],
+                    location: elem[3],
 
-                startDate: {
-                  year: elem[3].split('/')[1],
-                  month: elem[3].split('/')[0]
-                },
+                    startDate: moment(elem[4]).format('YYYY-MM-DD'),
 
-                endDate: elem[4] ? {
-                  year: elem[4].split('/')[1],
-                  month: elem[4].split('/')[0]
-                } : null,
-
-                title: elem[5]
-              }));
+                    endDate: elem[5] ? moment(elem[5]).format('YYYY-MM-DD') : null,
+                  };
+                }
+              );
               linkedinToJsonResume.processPosition(positions.sort((p1,p2) =>
                 (+p2.startDate.year - +p1.startDate.year) || (+p2.startDate.month - +p1.startDate.month)
               ));
               return;
             });
 
-          case 'Languages.csv':
+          case (entry.filename.indexOf('Languages.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
               const languages = elements.slice(1, elements.length - 1).map(elem => ({
@@ -126,9 +124,9 @@ import save from './file.js';
               return;
             });
 
-          case 'Recommendations Received.csv':
+          case (entry.filename.indexOf('Recommendations Received.csv') !== -1):
             return readEntryContents(entry).then(contents => {
-              const elements = csvToArray(contents); 
+              const elements = csvToArray(contents);
               const recommendations = elements.slice(1, elements.length - 1).map(elem => ({
                 recommenderFirstName: elem[0],
                 recommenderLastName: elem[1],
@@ -142,7 +140,7 @@ import save from './file.js';
               return;
             });
 
-          case 'Profile.csv':
+          case (entry.filename.indexOf('Profile.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
               const profile = {
@@ -163,7 +161,7 @@ import save from './file.js';
               return;
             });
 
-            case 'Email Addresses.csv':
+            case (entry.filename.indexOf('Email Addresses.csv') !== -1):
               return readEntryContents(entry).then(contents => {
                 const elements = csvToArray(contents, '\t'); // yes, recommendations use tab-delimiter
                 const email = elements.slice(1, elements.length - 1).map(elem => ({
@@ -179,7 +177,7 @@ import save from './file.js';
                 return;
               });
 
-          case 'Interests.csv':
+          case (entry.filename.indexOf('Interests.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
               let interests = [];
@@ -190,21 +188,15 @@ import save from './file.js';
               return;
             });
 
-          case 'Projects.csv':
+          case (entry.filename.indexOf('Projects.csv') !== -1):
             return readEntryContents(entry).then(contents => {
               const elements = csvToArray(contents);
               const projects = elements.slice(1, elements.length - 1).map(elem => ({
                 title: elem[0],
 
-                startDate: {
-                  year: elem[1].split('/')[1],
-                  month: elem[1].split('/')[0]
-                },
+                startDate: moment(elem[1]).format('YYYY-MM-DD'),
 
-                endDate: elem[2] ? {
-                  year: elem[2].split('/')[1],
-                  month: elem[2].split('/')[0]
-                } : null,
+                endDate: elem[2] ? moment(elem[2]).format('YYYY-MM-DD') : null,
 
                 description: elem[3],
                 url: elem[4]
