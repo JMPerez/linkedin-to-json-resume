@@ -4,7 +4,9 @@
   "description": "LinkedIn to JSON Résumé",
   "main": "js/main.js",
   "scripts": {
+    "start": "npm run pre-build; npm run build",
     "build": "mkdir -p dist && node ./node_modules/browserify/bin/cmd.js -d -e js/main.js -t babelify --outfile dist/output.js",
+    "pre-build": "cp -f node_modules/moment/min/moment.min.js vendor/moment.js",
     "lint": "./node_modules/jshint/bin/jshint js/*.js",
     "test": "npm run lint"
   },
@@ -22,5 +24,8 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.4",
     "jshint": "^2.8.0"
+  },
+  "dependencies": {
+    "moment": "^2.18.1"
   }
 }
