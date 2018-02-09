@@ -18,5 +18,6 @@
   "trailing": true,
   "smarttabs": true,
   "maxdepth": 2,
-  "maxcomplexity": 10
+  "maxcomplexity": 10,
+  "sourceType": "module"
 }

@@ -26,7 +26,7 @@
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function(obj) {
+export default function(obj) {
   "use strict";
 
   var ERR_BAD_FORMAT = "File format is not recognized.";
@@ -949,6 +949,7 @@
   }
 
   function onerror_default(error) {
+    console.log(error);
     alert(error);
   }
 
@@ -996,4 +997,4 @@
     workerScripts: null,
   };
 
-})(this);
+};

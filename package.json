@@ -2,12 +2,13 @@
   "name": "linkedin-to-json-resume",
   "version": "2.0.0",
   "description": "LinkedIn to JSON Résumé",
-  "main": "js/main.js",
+  "main": "src/js/main.js",
   "scripts": {
-    "start": "npm run pre-build; npm run build",
-    "build": "mkdir -p dist && node ./node_modules/browserify/bin/cmd.js -d -e js/main.js -t babelify --outfile dist/output.js",
-    "pre-build": "cp -f node_modules/moment/min/moment.min.js vendor/moment.js",
-    "lint": "./node_modules/jshint/bin/jshint js/*.js",
+    "start": "npm run moment; npm run develop",
+    "develop": "parcel src/index.html",
+    "build": "parcel build src/index.html; mv dist/index.html .",
+    "moment": "cp -f node_modules/moment/min/moment.min.js src/vendor/moment.js",
+    "lint": "./node_modules/jshint/bin/jshint src/js/*.js",
     "test": "npm run lint"
   },
   "repository": {
@@ -21,11 +22,11 @@
   },
   "homepage": "https://github.com/JMPerez/linkedin-to-json-resume#readme",
   "devDependencies": {
-    "babelify": "^6.1.2",
-    "browserify": "^10.2.4",
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "parcel-bundler": "^1.5.1"
   },
   "dependencies": {
+    "isomorphic-unzip": "^1.1.1",
     "moment": "^2.18.1"
   }
 }
