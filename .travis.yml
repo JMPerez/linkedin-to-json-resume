@@ -1,9 +1,16 @@
 language: node_js
 node_js:
   - "node"
-  - "iojs"
 before_script:
   - npm install
 branches:
   only:
-    - gh-pages
+    - master
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: master
+  local-dir: dist

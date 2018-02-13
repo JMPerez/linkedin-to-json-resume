@@ -9,7 +9,7 @@
     "build": "parcel build src/index.html; mv dist/index.html .",
     "moment": "cp -f node_modules/moment/min/moment.min.js src/vendor/moment.js",
     "lint": "./node_modules/jshint/bin/jshint src/js/*.js",
-    "test": "npm run lint"
+    "test": "npm run moment && npm run build"
   },
   "repository": {
     "type": "git",
