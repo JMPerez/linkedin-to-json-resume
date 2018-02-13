@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run moment; npm run develop",
     "develop": "parcel src/index.html",
-    "build": "parcel build src/index.html; mv dist/index.html .",
+    "build": "parcel build src/index.html --public-url ./",
     "moment": "cp -f node_modules/moment/min/moment.min.js src/vendor/moment.js",
     "lint": "./node_modules/jshint/bin/jshint src/js/*.js",
     "test": "npm run moment && npm run build"
