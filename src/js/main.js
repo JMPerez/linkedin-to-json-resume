@@ -15,13 +15,18 @@ const downloadButton = document.querySelector('.download');
 downloadButton.addEventListener('click', () => {
   import ('./file.js').then(save => {
    save.default(JSON.stringify(linkedinToJsonResume.getOutput(), undefined, 2), 'resume.json');
+   if (window.ga) {
+     ga('send', 'event', 'linkedin-to-json-resume', 'download-resume');
+   }
   });
 });
 downloadButton.style.display = 'none';
 
 // file selection
 function fileSelectHandler(e) {
-
+  if (window.ga) {
+    ga('send', 'event', 'linkedin-to-json-resume', 'file-selected');
+  }
   Promise.all([
     import ('./converter.js'),
     import('../vendor/moment.js'),
@@ -71,7 +76,6 @@ function fileSelectHandler(e) {
           switch (true) {
             case (entry.filename.indexOf('Skills.csv') !== -1):
               return readEntryContents(entry).then(contents => {
-                // console.log('Skills contents', contents);
                 contents = contents.replace(/"/g, '');
                 let elements = contents.split('\n');
                 elements = elements.slice(1, elements.length -1);
@@ -219,6 +223,9 @@ function fileSelectHandler(e) {
         });
 
         Promise.all(promises).then(() => {
+          if (window.ga) {
+            ga('send', 'event', 'linkedin-to-json-resume', 'file-parsed-success');
+          }
           filedrag.innerHTML = 'Dropped! See the resulting JSON Resume at the bottom.';
           const output = document.getElementById('output');
           output.innerHTML = JSON.stringify(linkedinToJsonResume.getOutput(), undefined, 2);
