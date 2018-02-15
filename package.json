@@ -23,7 +23,7 @@
   "homepage": "https://github.com/JMPerez/linkedin-to-json-resume#readme",
   "devDependencies": {
     "jshint": "^2.8.0",
-    "parcel-bundler": "^1.5.1"
+    "parcel-bundler": "^1.6.0"
   },
   "dependencies": {
     "isomorphic-unzip": "^1.1.1",
