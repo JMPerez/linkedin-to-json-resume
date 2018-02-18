@@ -110,10 +110,8 @@ function fileSelectHandler(e) {
                       title: elem[1],
                       description: elem[2],
                       location: elem[3],
-
-                      startDate: moment(elem[4]).format('YYYY-MM-DD'),
-
-                      endDate: elem[5] ? moment(elem[5]).format('YYYY-MM-DD') : null,
+                      startDate: moment(elem[4], 'MMM YYYY').format('YYYY-MM-DD'),
+                      endDate: elem[5] ? moment(elem[5], 'MMM YYYY').format('YYYY-MM-DD') : null,
                     };
                   }
                 );
