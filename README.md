@@ -21,6 +21,12 @@ Install the dependencies running:
 
 `npm install`
 
-Then, in order to generate the `dist/output.js` file you will need to run:
+To start developing run:
+
+`npm run start`
+
+To build the project in production mode run:
 
 `npm run build`
+
+and serve the files from the `dist` folder.
