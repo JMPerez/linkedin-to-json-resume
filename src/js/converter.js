@@ -1,6 +1,7 @@
 /* exported onLinkedInLoad */
+import CountryCodes from './country-codes';
 
-// todo: import publications, awards, volunteer
+// todo: import awards, volunteer
 class LinkedInToJsonResume {
   constructor() {
     this.target = {};
@@ -32,27 +33,40 @@ class LinkedInToJsonResume {
   }
 
   _extend(target, source) {
-    target = target || {};
+    target = target || {};
     Object.keys(source).forEach(key => target[key] = source[key]);
   }
 
   processProfile(source) {
+    console.log(source);
     this.target.basics = this.target.basics || {};
+
+    const ccItem = CountryCodes.find(item => item.name === source.country);
+    let countryCode = '';
+    if (ccItem) {
+      countryCode = ccItem['alpha-2'];
+    }
+
     this._extend(this.target.basics, {
       name: `${source.firstName} ${source.lastName}`,
       label: source.headline,
-      picture: source.pictureUrl,
-      phone: source.phoneNumbers && source.phoneNumbers._total ? source.phoneNumbers.values[0].phoneNumber : '',
-      website: '',
+      picture: '',
+      email: '',
+      phone: '',
+      website: source.websites ? source.websites.split(',')[0].split(':').slice(1).join(':') : '',
       summary: source.summary,
       location: {
         address: source.address,
-        postalCode: '',
+        postalCode: source.zipCode,
         city: source.location ? source.location.name : '',
-        countryCode: source.location ? source.location.country.code.toUpperCase() : '',
+        countryCode: countryCode,
         region: ''
       },
-      profiles: []
+      profiles: source.twitterHandles ? [{
+        network: 'Twitter',
+        username: source.twitterHandles,
+        url: `https://twitter.com/${source.twitterHandles}`
+      }] : []
     });
   }
 
