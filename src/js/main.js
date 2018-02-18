@@ -215,6 +215,20 @@ function fileSelectHandler(e) {
                 return;
               });
 
+            case (entry.filename.indexOf('Publications.csv') !== -1):
+              return readEntryContents(entry).then(contents => {
+                const elements = csvToArray(contents);
+                const publications = elements.slice(1, elements.length - 1).map(elem => ({
+                  name: elem[0],
+                  date: moment(elem[1]).format('YYYY-MM-DD'),
+                  description: elem[2],
+                  publisher: elem[3],
+                  url: elem[4]
+                }));
+                linkedinToJsonResume.processPublications(publications);
+                return;
+              });
+
             default:
               return Promise.resolve([]);
           }

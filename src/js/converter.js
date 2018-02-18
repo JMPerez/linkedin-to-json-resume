@@ -155,6 +155,21 @@ class LinkedInToJsonResume {
     this.target.projects = source.map(processProjects);
   }
 
+  processPublications(source) {
+    function processPublications(publication) {
+
+      let p = {
+        name: publication.name,
+        publisher: publication.publisher,
+        releaseDate: publication.date,
+        website: publication.url,
+        summary: publication.description
+      };
+      return p;
+   }
+
+   this.target.publications = source.map(processPublications);
+  }
 }
 
 export default LinkedInToJsonResume;
