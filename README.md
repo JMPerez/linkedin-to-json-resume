@@ -1,6 +1,8 @@
 LinkedIn to JSON Résumé [![Build Status](https://travis-ci.org/JMPerez/linkedin-to-json-resume.svg?branch=master)](https://travis-ci.org/JMPerez/linkedin-to-json-resume)
 =======================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JMPerez/linkedin-to-json-resume.svg)](https://greenkeeper.io/)
+
 This is a small site that allows you to generate a JSON output compatible with [JSON Résumé](http://jsonresume.org/) (version 0.0.0) from your LinkedIn profile.
 
 You first need to download a copy of your data through [LinkedIn's Data Export Page](https://www.linkedin.com/settings/data-export-page), and then select that file from this project page.

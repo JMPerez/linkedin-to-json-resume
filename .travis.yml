@@ -6,6 +6,7 @@ before_script:
 branches:
   only:
     - master
+    - /^greenkeeper/.*$/
 deploy:
   provider: pages
   skip-cleanup: true
