@@ -4,12 +4,11 @@
   "description": "LinkedIn to JSON Résumé",
   "main": "src/js/main.js",
   "scripts": {
-    "start": "npm run moment; npm run develop",
+    "start": "npm run develop",
     "develop": "parcel src/index.html",
     "build": "parcel build src/index.html --public-url ./",
-    "moment": "cp -f node_modules/moment/min/moment.min.js src/vendor/moment.js",
     "lint": "./node_modules/jshint/bin/jshint src/js/*.js",
-    "test": "npm run moment && npm run build"
+    "test": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -23,7 +22,8 @@
   "homepage": "https://github.com/JMPerez/linkedin-to-json-resume#readme",
   "devDependencies": {
     "jshint": "^2.8.0",
-    "parcel-bundler": "^1.6.0"
+    "parcel-bundler": "^1.6.0",
+    "typescript": "^2.7.2"
   },
   "dependencies": {
     "isomorphic-unzip": "^1.1.1",

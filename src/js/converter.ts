@@ -1,8 +1,40 @@
 /* exported onLinkedInLoad */
 import CountryCodes from './country-codes';
 
-// todo: import awards, volunteer
+interface Output {
+  basics?: object;
+  education?: object;
+  languages?: object;
+  interests?: object;
+  projects?: object;
+  publications?: object;
+  references?: object;
+  skills?: object;
+  work?: object;
+}
+
+interface Position {
+  company: string,
+  position: string,
+  website: string,
+  startDate: string,
+  summary: string,
+  highlights: Array<string>
+  endDate?: string
+};
+
+interface Education {
+  institution: string,
+  area: string,
+  studyType: string,
+  startDate: string,
+  gpa: string,
+  courses: Array<string>,
+  endDate?: string
+}
+
 class LinkedInToJsonResume {
+  target: Output;
   constructor() {
     this.target = {};
   }
@@ -34,11 +66,10 @@ class LinkedInToJsonResume {
 
   _extend(target, source) {
     target = target || {};
-    Object.keys(source).forEach(key => target[key] = source[key]);
+    Object.keys(source).forEach(key => (target[key] = source[key]));
   }
 
   processProfile(source) {
-    console.log(source);
     this.target.basics = this.target.basics || {};
 
     const ccItem = CountryCodes.find(item => item.name === source.country);
@@ -53,7 +84,13 @@ class LinkedInToJsonResume {
       picture: '',
       email: '',
       phone: '',
-      website: source.websites ? source.websites.split(',')[0].split(':').slice(1).join(':') : '',
+      website: source.websites
+        ? source.websites
+            .split(',')[0]
+            .split(':')
+            .slice(1)
+            .join(':')
+        : '',
       summary: source.summary,
       location: {
         address: source.address,
@@ -62,22 +99,26 @@ class LinkedInToJsonResume {
         countryCode: countryCode,
         region: ''
       },
-      profiles: source.twitterHandles ? [{
-        network: 'Twitter',
-        username: source.twitterHandles,
-        url: `https://twitter.com/${source.twitterHandles}`
-      }] : []
+      profiles: source.twitterHandles
+        ? [
+            {
+              network: 'Twitter',
+              username: source.twitterHandles,
+              url: `https://twitter.com/${source.twitterHandles}`
+            }
+          ]
+        : []
     });
   }
 
   processEmail(source) {
     this.target.basics = this.target.basics || {};
-    this._extend(this.target.basics, {'email': source.address});
+    this._extend(this.target.basics, { email: source.address });
   }
 
   processPosition(source) {
     function processPosition(position) {
-      let object = {
+      let object = <Position>{
         company: position.companyName,
         position: position.title || '',
         website: '',
@@ -98,7 +139,7 @@ class LinkedInToJsonResume {
 
   processEducation(source) {
     function processEducation(education) {
-      let object = {
+      let object = <Education>{
         institution: education.schoolName,
         area: '',
         studyType: education.degree,
@@ -119,70 +160,58 @@ class LinkedInToJsonResume {
 
   processSkills(skills) {
     this.target.skills = skills.map(skill => ({
-        name: skill,
-        level: '',
-        keywords: []
-      }));
+      name: skill,
+      level: '',
+      keywords: []
+    }));
   }
 
-  processLanguages(source) {
+  processLanguages(languages) {
     function cleanProficiencyString(proficiency) {
       proficiency = proficiency.toLowerCase().replace(/_/g, ' ');
       return proficiency[0].toUpperCase() + proficiency.substr(1);
     }
 
-    this.target.languages = source.map(language => ({
+    this.target.languages = languages.map(language => ({
       language: language.name,
       fluency: language.proficiency ? cleanProficiencyString(language.proficiency) : null
     }));
   }
 
-  processReferences(source) {
-    this.target.references = source.map(reference => ({
+  processReferences(references) {
+    this.target.references = references.map(reference => ({
       name: `${reference.recommenderFirstName} ${reference.recommenderLastName} - ${reference.recommenderCompany}`,
       reference: reference.recommendationBody
     }));
   }
 
-  processInterests(source) {
-    this.target.interests = source.map(interest => ({
+  processInterests(interests) {
+    this.target.interests = interests.map(interest => ({
       name: interest,
       keywords: []
     }));
   }
 
-  processProjects(source) {
-    function processProjects(project) {
-
-       let p = {
-          name: project.title,
-          startDate: `${project.startDate}`,
-          summary: project.description,
-          url: project.url
-        };
-       if(project.endDate) {
-          p.endDate = `${project.endDate}`;
-       }
-       return p;
-    }
-
-    this.target.projects = source.map(processProjects);
+  processProjects(projects) {
+    this.target.projects = projects.map(project => ({
+      ...{
+        name: project.title,
+        startDate: `${project.startDate}`,
+        summary: project.description,
+        url: project.url
+      },
+      ...(project.endDate ? { endDate: `${project.endDate}` } : {})
+    }));
   }
 
-  processPublications(source) {
-    function processPublications(publication) {
-
-      let p = {
-        name: publication.name,
-        publisher: publication.publisher,
-        releaseDate: publication.date,
-        website: publication.url,
-        summary: publication.description
-      };
-      return p;
-   }
-
-   this.target.publications = source.map(processPublications);
+  processPublications(publications) {
+    this.target.publications = publications.map(publication => ({
+      name: publication.name,
+      publisher: publication.publisher,
+      releaseDate: publication.date,
+      website: publication.url,
+      summary: publication.description
+    }));
   }
 }
 
