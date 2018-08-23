@@ -3,17 +3,17 @@ const fileselect = document.getElementById('fileselect');
 let fileName = null;
 
 interface FileReaderEventTarget extends EventTarget {
-  result:string
+  result: string;
 }
 
 interface FileReaderEvent extends Event {
   target: FileReaderEventTarget;
-  getMessage():string;
+  getMessage(): string;
 }
 
 interface Window {
   ga: any;
-  Prism: {highlightElement(elem: HTMLElement): void};
+  Prism: { highlightElement(elem: HTMLElement): void };
 }
 
 // file drag hover
@@ -63,17 +63,17 @@ function fileSelectHandler(e) {
     const file = droppedFiles[0];
     fileName = file.name;
 
-    const readBlob = (blob: Blob) : Promise<string> => {
+    const readBlob = (blob: Blob): Promise<string> => {
       return new Promise(resolve => {
         let reader = new FileReader();
-        reader.onload = (e:FileReaderEvent) => {
+        reader.onload = (e: FileReaderEvent) => {
           resolve(e.target.result);
         };
         reader.readAsText(blob);
       });
     };
 
-    const readEntryContents = (entry: any) : Promise<string> => {
+    const readEntryContents = (entry: any): Promise<string> => {
       return new Promise(resolve => {
         Unzip.getEntryData(entry, (error, blob) => {
           readBlob(blob).then(resolve);
@@ -115,7 +115,9 @@ function fileSelectHandler(e) {
                   activities: elem[5]
                 }));
               linkedinToJsonResume.processEducation(
-                education.sort((e1, e2) => -(e1.startDate.localeCompare(e2.startDate)))
+                education.sort(
+                  (e1, e2) => -e1.startDate.localeCompare(e2.startDate)
+                )
               );
               return;
             });
@@ -138,7 +140,9 @@ function fileSelectHandler(e) {
                   };
                 });
               linkedinToJsonResume.processPosition(
-                positions.sort((p1, p2) => -(p1.startDate.localeCompare(p2.startDate)))
+                positions.sort(
+                  (p1, p2) => -p1.startDate.localeCompare(p2.startDate)
+                )
               );
               return;
             });
@@ -238,18 +242,15 @@ function fileSelectHandler(e) {
                 .slice(1, elements.length - 1)
                 .map(elem => ({
                   title: elem[0],
-
-                  startDate: moment(elem[1]).format('YYYY-MM-DD'),
-
-                  endDate: elem[2]
-                    ? moment(elem[2]).format('YYYY-MM-DD')
-                    : null,
-
-                  description: elem[3],
-                  url: elem[4]
+                  description: elem[1],
+                  url: elem[2],
+                  startDate: moment(elem[3]).format('YYYY-MM-DD'),
+                  endDate: elem[4] ? moment(elem[4]).format('YYYY-MM-DD') : null
                 }));
               linkedinToJsonResume.processProjects(
-                projects.sort((p1, p2) => -(p1.startDate.localeCompare(p2.startDate)))
+                projects.sort(
+                  (p1, p2) => -p1.startDate.localeCompare(p2.startDate)
+                )
               );
               return;
             });
@@ -267,7 +268,7 @@ function fileSelectHandler(e) {
                   url: elem[4]
                 }));
               linkedinToJsonResume.processPublications(
-                publications.sort((p1, p2) => -(p1.date.localeCompare(p2.date)))
+                publications.sort((p1, p2) => -p1.date.localeCompare(p2.date))
               );
               return;
             });
@@ -279,7 +280,12 @@ function fileSelectHandler(e) {
 
       Promise.all(promises).then(() => {
         if (window.ga) {
-          window.ga('send', 'event', 'linkedin-to-json-resume', 'file-parsed-success');
+          window.ga(
+            'send',
+            'event',
+            'linkedin-to-json-resume',
+            'file-parsed-success'
+          );
         }
         filedrag.innerHTML =
           'Dropped! See the resulting JSON Resume at the bottom.';
