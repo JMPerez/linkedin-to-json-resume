@@ -75,7 +75,7 @@ function fileSelectHandler(e) {
 
     const readEntryContents = (entry: any): Promise<string> => {
       return new Promise(resolve => {
-        Unzip.getEntryData(entry, (error, blob) => {
+        Unzip.default.getEntryData(entry, (error, blob) => {
           readBlob(blob).then(resolve);
         });
       });
@@ -83,7 +83,7 @@ function fileSelectHandler(e) {
 
     let unzip = null;
     const getEntries = (file, onend) => {
-      unzip = new Unzip(file);
+      unzip = new Unzip.default(file);
       unzip.getEntries(function(error, entries) {
         onend(entries);
       });
