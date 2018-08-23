@@ -187,16 +187,15 @@ function fileSelectHandler(e) {
                 address: elements[1][3],
                 birthDate: elements[1][4],
                 contactInstructions: elements[1][5],
-                maritalStatus: elements[1][6],
-                headline: elements[1][7],
-                summary: elements[1][8],
-                industry: elements[1][9],
-                country: elements[1][10],
-                zipCode: elements[1][11],
-                geoLocation: elements[1][12],
-                twitterHandles: elements[1][13],
-                websites: elements[1][14],
-                instantMessengers: elements[1][15]
+                headline: elements[1][6],
+                summary: elements[1][7],
+                industry: elements[1][8],
+                country: elements[1][9],
+                zipCode: elements[1][10],
+                geoLocation: elements[1][11],
+                twitterHandles: elements[1][12],
+                websites: elements[1][13],
+                instantMessengers: elements[1][14]
               };
               linkedinToJsonResume.processProfile(profile);
               return;
