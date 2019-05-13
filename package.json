@@ -26,7 +26,7 @@
     "typescript": "^2.7.2"
   },
   "dependencies": {
-    "isomorphic-unzip": "^1.1.1",
+    "isomorphic-unzip": "^1.1.5",
     "moment": "^2.18.1"
   }
 }
