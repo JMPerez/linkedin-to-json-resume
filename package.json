@@ -23,7 +23,7 @@
   "devDependencies": {
     "jshint": "^2.9.6",
     "parcel-bundler": "^1.9.7",
-    "typescript": "^2.7.2"
+    "typescript": "^3.5.2"
   },
   "dependencies": {
     "isomorphic-unzip": "^1.1.1",
