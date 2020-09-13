@@ -1,5 +1,5 @@
 /* exported onLinkedInLoad */
-import CountryCodes from './country-codes';
+import CountryCodes from "./country-codes";
 
 interface Output {
   basics?: object;
@@ -14,23 +14,23 @@ interface Output {
 }
 
 interface Position {
-  company: string,
-  position: string,
-  website: string,
-  startDate: string,
-  summary: string,
-  highlights: Array<string>
-  endDate?: string
-};
+  company: string;
+  position: string;
+  website: string;
+  startDate: string;
+  summary: string;
+  highlights: Array<string>;
+  endDate?: string;
+}
 
 interface Education {
-  institution: string,
-  area: string,
-  studyType: string,
-  startDate: string,
-  gpa: string,
-  courses: Array<string>,
-  endDate?: string
+  institution: string;
+  area: string;
+  studyType: string;
+  startDate: string;
+  gpa: string;
+  courses: Array<string>;
+  endDate?: string;
 }
 
 class LinkedInToJsonResume {
@@ -42,17 +42,17 @@ class LinkedInToJsonResume {
   getOutput() {
     // sort the object
     const propertyOrder = [
-      'basics',
-      'work',
-      'volunteer',
-      'education',
-      'awards',
-      'publications',
-      'skills',
-      'languages',
-      'interests',
-      'references',
-      'projects'
+      "basics",
+      "work",
+      "volunteer",
+      "education",
+      "awards",
+      "publications",
+      "skills",
+      "languages",
+      "interests",
+      "references",
+      "projects",
     ];
 
     const sortedTarget = {};
@@ -66,48 +66,43 @@ class LinkedInToJsonResume {
 
   _extend(target, source) {
     target = target || {};
-    Object.keys(source).forEach(key => (target[key] = source[key]));
+    Object.keys(source).forEach((key) => (target[key] = source[key]));
   }
 
   processProfile(source) {
     this.target.basics = this.target.basics || {};
 
-    const ccItem = CountryCodes.find(item => item.name === source.country);
-    let countryCode = '';
+    const ccItem = CountryCodes.find((item) => item.name === source.country);
+    let countryCode = "";
     if (ccItem) {
-      countryCode = ccItem['alpha-2'];
+      countryCode = ccItem["alpha-2"];
     }
 
     this._extend(this.target.basics, {
       name: `${source.firstName} ${source.lastName}`,
       label: source.headline,
-      picture: '',
-      email: '',
-      phone: '',
+      picture: "",
+      email: "",
       website: source.websites
-        ? source.websites
-            .split(',')[0]
-            .split(':')
-            .slice(1)
-            .join(':')
-        : '',
+        ? source.websites.split(",")[0].split(":").slice(1).join(":")
+        : "",
       summary: source.summary,
       location: {
         address: source.address,
         postalCode: source.zipCode,
-        city: source.location ? source.location.name : '',
+        city: source.location ? source.location.name : "",
         countryCode: countryCode,
-        region: ''
+        region: "",
       },
       profiles: source.twitterHandles
         ? [
             {
-              network: 'Twitter',
+              network: "Twitter",
               username: source.twitterHandles,
-              url: `https://twitter.com/${source.twitterHandles}`
-            }
+              url: `https://twitter.com/${source.twitterHandles}`,
+            },
           ]
-        : []
+        : [],
     });
   }
 
@@ -120,11 +115,11 @@ class LinkedInToJsonResume {
     function processPosition(position) {
       let object = <Position>{
         company: position.companyName,
-        position: position.title || '',
-        website: '',
+        position: position.title || "",
+        website: "",
         startDate: `${position.startDate}`,
         summary: position.description,
-        highlights: []
+        highlights: [],
       };
 
       if (position.endDate) {
@@ -141,11 +136,11 @@ class LinkedInToJsonResume {
     function processEducation(education) {
       let object = <Education>{
         institution: education.schoolName,
-        area: '',
+        area: "",
         studyType: education.degree,
         startDate: `${education.startDate}`,
-        gpa: '',
-        courses: []
+        gpa: "",
+        courses: [],
       };
 
       if (education.endDate) {
@@ -159,59 +154,67 @@ class LinkedInToJsonResume {
   }
 
   processSkills(skills) {
-    this.target.skills = skills.map(skill => ({
+    this.target.skills = skills.map((skill) => ({
       name: skill,
-      level: '',
-      keywords: []
+      level: "",
+      keywords: [],
     }));
   }
 
   processLanguages(languages) {
     function cleanProficiencyString(proficiency) {
-      proficiency = proficiency.toLowerCase().replace(/_/g, ' ');
+      proficiency = proficiency.toLowerCase().replace(/_/g, " ");
       return proficiency[0].toUpperCase() + proficiency.substr(1);
     }
 
-    this.target.languages = languages.map(language => ({
+    this.target.languages = languages.map((language) => ({
       language: language.name,
-      fluency: language.proficiency ? cleanProficiencyString(language.proficiency) : null
+      fluency: language.proficiency
+        ? cleanProficiencyString(language.proficiency)
+        : null,
     }));
   }
 
   processReferences(references) {
-    this.target.references = references.map(reference => ({
+    this.target.references = references.map((reference) => ({
       name: `${reference.recommenderFirstName} ${reference.recommenderLastName} - ${reference.recommenderCompany}`,
-      reference: reference.recommendationBody
+      reference: reference.recommendationBody,
     }));
   }
 
   processInterests(interests) {
-    this.target.interests = interests.map(interest => ({
+    this.target.interests = interests.map((interest) => ({
       name: interest,
-      keywords: []
+      keywords: [],
     }));
   }
 
   processProjects(projects) {
-    this.target.projects = projects.map(project => ({
+    this.target.projects = projects.map((project) => ({
       ...{
         name: project.title,
         startDate: `${project.startDate}`,
         summary: project.description,
-        url: project.url
+        url: project.url,
       },
-      ...(project.endDate ? { endDate: `${project.endDate}` } : {})
+      ...(project.endDate ? { endDate: `${project.endDate}` } : {}),
     }));
   }
 
   processPublications(publications) {
-    this.target.publications = publications.map(publication => ({
+    this.target.publications = publications.map((publication) => ({
       name: publication.name,
       publisher: publication.publisher,
       releaseDate: publication.date,
       website: publication.url,
-      summary: publication.description
+      summary: publication.description,
     }));
+  }
+
+  processPhoneNumber(number) {
+    this._extend(this.target.basics, {
+      phone: number.number,
+    });
   }
 }
 
