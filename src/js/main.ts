@@ -92,7 +92,7 @@ function fileSelectHandler(e) {
     getEntries(file, (entries) => {
       const promises = entries.map((entry) => {
         switch (true) {
-          case entry.filename.indexOf("/Skills.csv") !== -1:
+          case entry.filename.indexOf("Skills.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               contents = contents.replace(/"/g, "");
               let elements = contents.split("\n");
@@ -101,7 +101,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Education.csv") !== -1:
+          case entry.filename.indexOf("Education.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const education = elements
@@ -122,7 +122,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Positions.csv") !== -1:
+          case entry.filename.indexOf("Positions.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const positions = elements
@@ -147,7 +147,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Languages.csv") !== -1:
+          case entry.filename.indexOf("Languages.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const languages = elements
@@ -160,7 +160,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Recommendations Received.csv") !== -1:
+          case entry.filename.indexOf("Recommendations Received.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const recommendations = elements
@@ -181,7 +181,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Profile.csv") !== -1:
+          case entry.filename.indexOf("Profile.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const profile = {
@@ -195,7 +195,7 @@ function fileSelectHandler(e) {
                 industry: elements[1][7],
                 zipCode: elements[1][8],
                 geoLocation: elements[1][9],
-                twitterHandles: elements[1][10],
+                twitterHandles: elements[1][10].replace('[', '').replace(']', ''),
                 websites: elements[1][11],
                 instantMessengers: elements[1][12],
               };
@@ -203,7 +203,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Email Addresses.csv") !== -1:
+          case entry.filename.indexOf("Email Addresses.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents, "\t"); // yes, recommendations use tab-delimiter
               const email = elements
@@ -222,7 +222,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Interests.csv") !== -1:
+          case entry.filename.indexOf("Interests.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               let interests = [];
@@ -233,7 +233,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Projects.csv") !== -1:
+          case entry.filename.indexOf("Projects.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const projects = elements
@@ -255,7 +255,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/Publications.csv") !== -1:
+          case entry.filename.indexOf("Publications.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const publications = elements
@@ -273,7 +273,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("/PhoneNumbers.csv") !== -1:
+          case entry.filename.indexOf("PhoneNumbers.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               elements.shift();
