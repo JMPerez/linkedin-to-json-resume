@@ -27,6 +27,6 @@
   },
   "dependencies": {
     "isomorphic-unzip": "^1.1.1",
-    "moment": "^2.18.1"
+    "moment": "^2.29.2"
   }
 }
