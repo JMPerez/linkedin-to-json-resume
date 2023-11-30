@@ -1,15 +1,11 @@
-LinkedIn to JSON Résumé [![Build Status](https://travis-ci.org/JMPerez/linkedin-to-json-resume.svg?branch=master)](https://travis-ci.org/JMPerez/linkedin-to-json-resume) [![Greenkeeper badge](https://badges.greenkeeper.io/JMPerez/linkedin-to-json-resume.svg)](https://greenkeeper.io/)
+LinkedIn to JSON Résumé
 =======================
 
-This is a small site that allows you to generate a JSON output compatible with [JSON Résumé](http://jsonresume.org/) (version 0.0.0) from your LinkedIn profile.
+This is a small site that allows you to generate a JSON output compatible with [JSON Résumé](http://jsonresume.org/) (version 0.0.0) from your LinkedIn profile.  **Try the demo on [https://jmperezperez.com/linkedin-to-json-resume/](https://jmperezperez.com/linkedin-to-json-resume/)**
 
-You first need to download a copy of your data through [LinkedIn's Data Export Page](https://www.linkedin.com/settings/data-export-page):
+You first need to download a copy of your data through the [LinkedIn's Data Export Page](https://www.linkedin.com/settings/data-export-page), then select that file from this project page.
 
-![Screenshot of LinkedIn Data Export](https://linkedin-json-resume.surge.sh/linkedin.png)
-
-Then select that file from this project page.
-
-Try the demo on [https://jmperezperez.com/linkedin-to-json-resume/](https://jmperezperez.com/linkedin-to-json-resume/)
+<a href="https://linkedin-json-resume.surge.sh/linkedin.png" target="_blank"><img src="https://linkedin-json-resume.surge.sh/linkedin.png" width="497" height="317" alt="Screenshot of LinkedIn Data Export"></a>
 
 ## Project Sponsors
 <a href="https://nubela.co/proxycurl/?utm_campaign=influencer_marketing&utm_source=github&utm_medium=social&utm_content=jose_manuel_perez_linkedin-to-json-resume" target="_blank"><img src="https://github.com/JMPerez/linkedin-to-json-resume/blob/master/proxycurl.png?raw=true" width="360" height="189"></a>
