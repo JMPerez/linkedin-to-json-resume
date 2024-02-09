@@ -7,9 +7,6 @@ You first need to download a copy of your data through the [LinkedIn's Data Expo
 
 <a href="https://linkedin-json-resume.surge.sh/linkedin.png" target="_blank"><img src="https://linkedin-json-resume.surge.sh/linkedin.png" width="497" height="317" alt="Screenshot of LinkedIn Data Export"></a>
 
-## Project Sponsors
-<a href="https://nubela.co/proxycurl/?utm_campaign=influencer_marketing&utm_source=github&utm_medium=social&utm_content=jose_manuel_perez_linkedin-to-json-resume" target="_blank"><img src="https://github.com/JMPerez/linkedin-to-json-resume/blob/master/proxycurl.png?raw=true" width="360" height="189"></a>
-
 ## LinkedIn API?
 
 Due to some changes in the LinkedIn API the exporter will no longer have access to the user's full profile from LinkedIn nor contact information. Unfortunately there is no way for this app to ask for that data through the LinkedIn OAuth gateway anymore. See https://github.com/JMPerez/linkedin-to-json-resume/issues/10
