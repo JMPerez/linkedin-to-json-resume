@@ -90,6 +90,17 @@ function fileSelectHandler(e) {
     };
 
     getEntries(file, (entries) => {
+      // Ensuring that "Profile.csv" is the first file in the zip
+      // Solving the phone number being processed before the profile
+      // Find the index of "Profile.csv", move it to the beginning
+      const profileIndex = entries.findIndex(
+        (entry) => entry.filename === "Profile.csv"
+      );
+      if (profileIndex !== -1) {
+        const [profileEntry] = entries.splice(profileIndex, 1);
+        entries.unshift(profileEntry);
+      }
+
       const promises = entries.map((entry) => {
         switch (true) {
           case entry.filename.indexOf("Skills.csv") !== -1:
@@ -160,7 +171,7 @@ function fileSelectHandler(e) {
               return;
             });
 
-          case entry.filename.indexOf("Recommendations Received.csv") !== -1:
+          case entry.filename.indexOf("Recommendations_Received.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents);
               const recommendations = elements
@@ -207,7 +218,9 @@ function fileSelectHandler(e) {
             return readEntryContents(entry).then((contents) => {
               const elements = csvToArray(contents, "\t"); // yes, recommendations use tab-delimiter
               const email = elements
-                .slice(1, elements.length - 1)
+                .flat()
+                .slice(1)
+                .map(elem => (elem as string).split(","))
                 .map((elem) => ({
                   address: elem[0],
                   status: elem[1],
@@ -239,13 +252,14 @@ function fileSelectHandler(e) {
               const projects = elements
                 .slice(1, elements.length - 1)
                 .map((elem) => ({
-                  title: elem[0],
-                  description: elem[1],
-                  url: elem[2],
+                  name: elem[0],
                   startDate: moment(elem[3]).format("YYYY-MM-DD"),
                   endDate: elem[4]
                     ? moment(elem[4]).format("YYYY-MM-DD")
                     : null,
+                  description: elem[1],
+                  highlights: [],
+                  url: elem[2],
                 }));
               linkedinToJsonResume.processProjects(
                 projects.sort(
@@ -275,6 +289,7 @@ function fileSelectHandler(e) {
 
           case entry.filename.indexOf("PhoneNumbers.csv") !== -1:
             return readEntryContents(entry).then((contents) => {
+
               const elements = csvToArray(contents);
               elements.shift();
               const elementsWithNumber = elements.filter(
@@ -288,6 +303,79 @@ function fileSelectHandler(e) {
                 };
                 linkedinToJsonResume.processPhoneNumber(number);
               }
+              return;
+            });
+
+          case entry.filename.indexOf("Honors.csv") !== -1:
+            return readEntryContents(entry).then((contents) => {
+              const elements = csvToArray(contents);
+              const awards = elements
+                .slice(1, elements.length - 1)
+                .map((elem) => ({
+                  title: elem[0],
+                  date: moment(elem[3]).format("YYYY-MM-DD"),
+                  awarder: "",
+                  summary: elem[1],
+                }));
+              linkedinToJsonResume.processAwards(
+                awards.sort((p1, p2) => -p1.date.localeCompare(p2.date))
+              );
+              return;
+            });
+
+          case entry.filename.indexOf("Certifications.csv") !== -1:
+            return readEntryContents(entry).then((contents) => {
+              const elements = csvToArray(contents);
+              const certificates = elements
+                .slice(1, elements.length - 1)
+                .map((elem) => ({
+                  name: elem[0],
+                  date: moment(elem[3]).format("YYYY-MM-DD"),
+                  issuer: elem[2],
+                  summary: "",
+                }));
+              linkedinToJsonResume.processCertificates(
+                certificates.sort((p1, p2) => -p1.date.localeCompare(p2.date))
+              );
+              return;
+            });
+
+          case entry.filename.indexOf("Endorsement_Received_Info.csv") !== -1:
+            return readEntryContents(entry).then((contents) => {
+              const elements = csvToArray(contents);
+
+              // increment the endorsement count every time the name is found
+              const endorsements: {name: string; level: number}[] = [];
+              (elements as [])
+                .slice(1, elements.length - 1)
+                .forEach((elem) => {
+                  const current = endorsements.find((endorsement) => endorsement.name === elem[1]);
+                  if (current) {
+                    current.level += 1;
+                  } else {
+                    endorsements.push({
+                      name: elem[1],
+                      level: 1,
+                    });
+                  }
+                }
+              );
+              linkedinToJsonResume.processEndorsements(endorsements);
+              return;
+            });
+
+          case entry.filename.indexOf("Causes You Care About.csv") !== -1:
+          case entry.filename.indexOf("Company Follows.csv") !== -1:
+          case entry.filename.indexOf("Hashtag_Follows.csv") !== -1:
+            return readEntryContents(entry).then((contents) => {
+              const elements = csvToArray(contents);
+              const interests = elements
+                .slice(1, elements.length - 1)
+                .map((elem) => ({
+                  name: elem[0],
+                  keywords: [],
+                }));
+              linkedinToJsonResume.processFollows(interests);
               return;
             });
 

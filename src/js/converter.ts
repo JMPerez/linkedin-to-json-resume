@@ -11,12 +11,15 @@ interface Output {
   references?: object;
   skills?: object;
   work?: object;
+  volunteer?: object;
+  awards?: object;
+  certificates: object;
 }
 
 interface Position {
-  company: string;
+  name: string;
   position: string;
-  website: string;
+  url: string;
   startDate: string;
   summary: string;
   highlights: Array<string>;
@@ -25,10 +28,11 @@ interface Position {
 
 interface Education {
   institution: string;
+  url?: string;
   area: string;
   studyType: string;
   startDate: string;
-  gpa: string;
+  score: string;
   courses: Array<string>;
   endDate?: string;
 }
@@ -47,6 +51,7 @@ class LinkedInToJsonResume {
       "volunteer",
       "education",
       "awards",
+      "certificates",
       "publications",
       "skills",
       "languages",
@@ -72,27 +77,44 @@ class LinkedInToJsonResume {
   processProfile(source) {
     this.target.basics = this.target.basics || {};
 
-    const ccItem = CountryCodes.find((item) => item.name === source.country);
+    // Splitting the address into city, region and country
+    // and trimming the values
+    // example: "Dublin, Leinster, Ireland" => ["Dublin", "Leinster", "Ireland"]
+    const addressArray = source.geoLocation
+      .split(",")
+      .map((item) => item.trim());
+
+    const ccItem = CountryCodes.find(
+      (item) => item.name === addressArray[addressArray.length - 1]
+    );
     let countryCode = "";
     if (ccItem) {
       countryCode = ccItem["alpha-2"];
     }
 
+    // Extracting the URL from the LinkedIn profile
+    // this regex will match the first URL in the format [NETWORK:URL]
+    // This regex will remove the network part and extract the URL
+    // it applies for https and http URLs
+    // e.g. [Twitter:https://twitter.com/housamz] will return https://twitter.com/housamz
+    const websiteRegex = /\[([A-Z]+):(https?:\/\/[^\s,\]]+)/;
+
     this._extend(this.target.basics, {
       name: `${source.firstName} ${source.lastName}`,
       label: source.headline,
-      picture: "",
+      image: "",
       email: "",
-      website: source.websites
-        ? source.websites.split(",")[0].split(":").slice(1).join(":")
+      phone: "",
+      url: source.websites
+        ? source.websites.match(websiteRegex)[2]
         : "",
       summary: source.summary,
       location: {
         address: source.address,
         postalCode: source.zipCode,
-        city: source.location ? source.location.name : "",
+        city: source.geoLocation ? addressArray[0] : "",
         countryCode: countryCode,
-        region: "",
+        region: addressArray[1],
       },
       profiles: source.twitterHandles
         ? [
@@ -114,16 +136,20 @@ class LinkedInToJsonResume {
   processPosition(source) {
     function processPosition(position) {
       let object = <Position>{
-        company: position.companyName,
+        name: position.companyName,
         position: position.title || "",
-        website: "",
+        url: "",
         startDate: `${position.startDate}`,
+        endDate: "",
         summary: position.description,
         highlights: [],
       };
 
+      // ensure the end date is after the start date directly
       if (position.endDate) {
         object.endDate = `${position.endDate}`;
+      } else {
+        delete object.endDate;
       }
 
       return object;
@@ -136,15 +162,20 @@ class LinkedInToJsonResume {
     function processEducation(education) {
       let object = <Education>{
         institution: education.schoolName,
+        url: "",
         area: "",
         studyType: education.degree,
         startDate: `${education.startDate}`,
-        gpa: "",
+        endDate: "",
+        score: "",
         courses: [],
       };
 
+      // ensure the end date is after the start date directly
       if (education.endDate) {
         object.endDate = `${education.endDate}`;
+      } else {
+        delete object.endDate;
       }
 
       return object;
@@ -192,9 +223,11 @@ class LinkedInToJsonResume {
   processProjects(projects) {
     this.target.projects = projects.map((project) => ({
       ...{
-        name: project.title,
+        name: project.name,
         startDate: `${project.startDate}`,
-        summary: project.description,
+        endDate: project.endDate ? `${project.endDate}` : "",
+        description: project.description,
+        highlights: project.highlights,
         url: project.url,
       },
       ...(project.endDate ? { endDate: `${project.endDate}` } : {}),
@@ -206,7 +239,7 @@ class LinkedInToJsonResume {
       name: publication.name,
       publisher: publication.publisher,
       releaseDate: publication.date,
-      website: publication.url,
+      url: publication.url,
       summary: publication.description,
     }));
   }
@@ -214,6 +247,69 @@ class LinkedInToJsonResume {
   processPhoneNumber(number) {
     this._extend(this.target.basics, {
       phone: number.number,
+    });
+  }
+
+  processAwards(awards) {
+    this.target.awards = awards.map((award) => ({
+      ...{
+        title: award.title,
+        date: `${award.date}`,
+        awarder: award.awarder,
+        summary: award.summary,
+      },
+    }));
+  }
+
+  processCertificates(certificates) {
+    this.target.certificates = certificates.map((certificate) => ({
+      ...{
+        name: certificate.name,
+        date: `${certificate.date}`,
+        issuer: certificate.issuer,
+        url: certificate.url,
+      },
+    }));
+  }
+
+  processEndorsements(endorsements) {
+    // This will update the level in this.target.skills
+    // according to how many endorsements the skill has
+    const processedSkills = new Set<string>();
+    this.target.skills.map((skill) => {
+      endorsements.filter((endorsement) => {
+        if (endorsement.name === skill.name) {
+          skill.level = endorsement.level;
+          processedSkills.add(skill.name);
+        }
+      });
+    });
+
+    // This will add the skills that have endorsements but
+    // are not in the skills array
+    endorsements.forEach((endorsement) => {
+      if (!processedSkills.has(endorsement.name)) {
+        this.target.skills.push({ ...endorsement, keywords: [] });
+        processedSkills.add(endorsement.name);
+      }
+    });
+
+    // Sort the skills by level
+    this.target.skills?.sort((a, b) => {
+      return b.level - a.level;
+    });
+  }
+
+  processFollows(interests) {
+    if (!this.target.interests) {
+      this.target.interests = [];
+    }
+    interests.forEach((interest) => {
+      if (
+        this.target.interests &&
+        this.target.interests.filter((i) => i.name === interest).length === 0
+      )
+        this.target.interests.push({... interest});
     });
   }
 }
