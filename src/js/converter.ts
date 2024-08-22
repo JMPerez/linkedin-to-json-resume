@@ -295,7 +295,7 @@ class LinkedInToJsonResume {
     });
 
     // Sort the skills by level
-    this.target.skills?.sort((a, b) => {
+    this.target.skills.sort((a, b) => {
       return b.level - a.level;
     });
   }
