@@ -1,71 +1,83 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>LinkedIn to JSON Resume</title>
-    <meta name="description" content="Export your LinkedIn profile to JSON Resume format.">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://d2v52k3cl9vedd.cloudfront.net/basscss/6.1.6/basscss.min.css">
-    <link rel="stylesheet" type="text/css" href="css/basic.css">
-    <link rel="stylesheet" type="text/css" href="css/prism.css">
-  </head>
-  <body class="post p2 p-responsive wrap">
-    <main class="measure">
-      <h1>LinkedIn to Json Résumé</h1>
-      <p>This is a small website that exports your LinkedIn profile to a <a href="http://jsonresume.org/">JSON Résumé</a>.</p>
-      <p>The source code is available <a href="https://github.com/JMPerez/linkedin-to-json-resume">on GitHub</a>.</p>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LinkedIn to JSON Resume</title>
+  <meta name="description" content="Export your LinkedIn profile to JSON Resume format.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="https://d2v52k3cl9vedd.cloudfront.net/basscss/6.1.6/basscss.min.css">
+  <link rel="stylesheet" type="text/css" href="css/basic.css">
+  <link rel="stylesheet" type="text/css" href="css/prism.css">
+</head>
+<body>
+  <main class="container-size mx-auto">
+    <div class="center">
+      <h1 class="mt3">LinkedIn to JSON Résumé</h1>
+      <p>Convert your LinkedIn profile into a <a href="http://jsonresume.org/">JSON Résumé</a>.</p>
 
-      <p>Due to <a href="https://github.com/JMPerez/linkedin-to-json-resume/issues/10">recent restrictions</a> added to the LinkedIn API, this web app can't ask for access to user's full profile. Thus, the best way is to export your data from LinkedIn and import it in this tool.</p>
-
-      <h2>Instructions</h2>
-      <ol>
-        <li>Go to the <a href="https://www.linkedin.com/settings/data-export-page">Data Export Page</a> on LinkedIn and click on "Request archive".</li>
-        <li>You will get an email from LinkedIn confirming your request. You will need to wait up to 72 hours to get a link to download your data.</li>
-        <li>After some hours you will receive a link to download your archive. Click on it and save the zip file.</li>
-        <li>Drag and drop or select the file (its name should be something like Basic_LinkedInDataExport_XX-XX-XXXX.zip or Complete_LinkedInDataExport_XX-XX-XXXX.zip) in the area below:</li>
-        </li>
-      </ol>
-
-      <div>
-        <p id="filedrag">
-          Drop a LinkedIn archive zip file or <button class="button" id="select-file">select a file</button>.
-        </p>
-        <input type="file" id="fileselect" name="fileselect[]" />
-      </div>
-
-      <h2 id="result">Result</h2>
-      <pre><code id="output" class="language-javascript"></code></pre>
-      <button class="button download">Download as resume.json</button>
-    </main>
-    <footer class="about">
-      <h3>About me</h3>
-      <div class="media">
-        <div class="img">
-          <img src="https://jmperezperez.com/assets/images/jmperez.jpg" class="avatar-image" title="José M. Pérez">
-        </div>
-        <div class="bd">
-          <div class="name">José M. Pérez</div>
-          <div class="media twitter">
-            <div class="img">
-              <img src="https://jmperezperez.com/assets/images/twitter.svg" width="16" height="16" class="twitter-logo" alt="Twitter">
-            </div>
-            <div class="bd">
-              <a href="https://twitter.com/jmperezperez">@jmperezperez</a>
-            </div>
+      <div class="bg-blue p1 rounded mb2 white" id="select-file">
+        <div class="file-container p3 moving-border rounded">
+          <div id="filedrag" class="flex flex-center">
+            <p>Drop a LinkedIn archive ZIP file here or</p>
+            <button class="btn rounded px4 py2 mt2">Select a file</button>
           </div>
-          <a href="https://jmperezperez.com">jmperezperez.com</a>
+          <input type="file" id="fileselect" name="fileselect[]" />
         </div>
       </div>
-    </footer>
-    <script src="js/main.ts"></script>
-    <script src="vendor/prism.js" data-manual></script>
-    <script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-      e.src='//www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-      ga('create','UA-39254352-1');ga('send','pageview');
-    </script>
-  </body>
+    </div>
+
+    <div id="hideOnSuccess">
+      <div class="md-flex p3 mb2 rounded instructions">
+        <div class="md-flex flex-center">
+          <h3 class="m0">Don't have a LinedIn archive file?</h3>
+        </div>
+        <div>
+          <ol class="m0">
+            <li>Go to LinkedIn's Data Export Page and click "Request archive".</li>
+            <li>Within 72 hours, you'll receive an email with a download link. Save the zip file you receive. <br><small>The file is named Basic_LinkedInDataExport_XX-XX-XXXX.zip or
+              Complete_LinkedInDataExport_XX-XX-XXXX.zip</small></li>
+            <li>Drag and drop or select the ZIP file above.</li>
+          </ol>
+        </div>
+      </div>
+
+      <small>Due to <a href="https://github.com/JMPerez/linkedin-to-json-resume/issues/10">recent restrictions</a> added
+        to
+        the LinkedIn API, this web app can't ask for access to user's full profile. Thus, the best way is to export your
+        data from LinkedIn and import it in this tool.</small>
+    </div>
+
+    <div id="result" class="mt3">
+      <h2 class="left m0">Result</h2>
+      <div id="buttons" class="right flex flex-justify">
+        <button class="button download">Download resume.json</button>
+        <button id="copyButton" class="button bg-olive ml2">Copy JSON</button>
+      </div>
+      <div class="clearfix"></div>
+      <pre><code id="output" class="language-javascript"></code></pre>
+    </div>
+  </main>
+
+  <footer class="container-size center border-top p2 mx-auto mt2">
+    <img src="https://jmperezperez.com/assets/images/jmperez.jpg" class="avatar-image" title="José M. Pérez" />
+    <div>
+      <span>&copy; All rights reserved for <a href="https://jmperezperez.com">José M. Pérez</a></span>
+      <span class="ml2">
+        <img src="https://jmperezperez.com/assets/images/twitter.svg" width="14" height="12" alt="Twitter" />
+        <a href="https://twitter.com/jmperezperez">@jmperezperez</a>
+      </span>
+    </div>
+    <span>Source code on <a href="https://github.com/JMPerez/linkedin-to-json-resume">GitHub</a></span>
+  </footer>
+  <script src="js/main.ts"></script>
+  <script src="vendor/prism.js" data-manual></script>
+  <script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+    function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+    e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+    e.src='//www.google-analytics.com/analytics.js';
+    r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+    ga('create','UA-39254352-1');ga('send','pageview');
+  </script>
+</body>
 </html>

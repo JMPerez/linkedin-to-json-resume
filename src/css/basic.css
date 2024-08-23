@@ -1,79 +1,72 @@
-main {
-  padding-bottom: 1rem;
+.container-size {
+  width: 80%;
 }
 
-.download {
-  margin: 1rem auto;
-}
-
-#filedrag {
-  border: 5px dashed #C4CDF0;
-  border-radius: 7px;
-  cursor: default;
-  color: #333;
-  background-color: #F1F1F4;
-  font-size: 120%;
-  padding: 2em;
-  margin: 0 1em;
-}
-
-#filedrag.hover {
-  color: #333;
-  background-color: #fff;
-}
-
-#fileselect {
-  display: none;
-}
-
+#fileselect,
 #result {
   display: none;
 }
 
-.media, .bd {
-  overflow: hidden;
-  _overflow: visible;
-  zoom: 1;
+#select-file:hover {
+  background-color: rgba(0, 116, 217, 0.9);
 }
 
-.about > .media {
-  margin-top: 10px;
+.instructions {
+  background-color: #f1f1f1;
 }
 
-.media .img {
-  float: left;
+.moving-border {
+  background: linear-gradient(90deg, white 50%, transparent 50%) repeat-x,
+    linear-gradient(90deg, white 50%, transparent 50%) repeat-x,
+    linear-gradient(0deg, white 50%, transparent 50%) repeat-y,
+    linear-gradient(0deg, white 50%, transparent 50%) repeat-y;
+  background-position: left top, right bottom, left bottom, right top;
+  background-size: 1rem 0.1rem, 1rem 0.1rem, 0.1rem 1rem, 0.1rem 1rem;
+  cursor: pointer;
 }
 
-.about .avatar-image {
-  border-radius: 100%;
-  height: 80px;
-  width: 80px;
+.moving-border:hover {
+  animation: move-border 1s infinite linear;
+}
+
+@keyframes move-border {
+  0% {
+    background-position: left top, right bottom, left bottom, right top;
+  }
+
+  100% {
+    background-position: left 1rem top, right 1rem bottom, left bottom 1rem,
+      right top 1rem;
+  }
+}
+
+#result {
+  position: relative;
+}
+
+#result #buttons {
+  position: sticky;
+  top: 1rem;
+}
+
+#result #buttons .button {
+  font-size: 0.8rem;
+  text-shadow: 0 1px 0 black;
+}
+
+.avatar-image {
+  border-radius: 0.5rem;
+  height: 30px;
   margin-right: 10px;
+  width: 30px;
 }
 
-.about .name {
-  font-weight: bold;
-  font-size: 110%;
-  margin-top: 5px;
-  margin-bottom: 2px;
-}
+@media (max-width: 832px) {
+  .container-size {
+    width: 90%;
+  }
 
-.twitter {
-  margin-bottom: 3px;
-}
-
-footer {
-  border-top: 1px solid rgba(0,0,0,0.15);
-  padding: 1em;
-}
-
-footer h3 {
-  color: rgba(0,0,0,0.3);
-  text-transform: uppercase;
-  font-size: 80%;
-  margin-bottom: 0.5em;
-}
-
-pre {
-  font-size: 0.8rem !important;
+  ol {
+    padding-left: 1rem;
+  }
 }
