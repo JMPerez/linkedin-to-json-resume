@@ -526,30 +526,34 @@ class LinkedInToJsonResume {
   }
 
   processEndorsements(endorsements) {
-    // This will update the level in this.target.skills
-    // according to how many endorsements the skill has
+    // Initialize skills array if it doesn't exist
+    if (!this.target.skills) {
+        this.target.skills = [];
+    }
+
+    // Rest of the existing code
     const processedSkills = new Set<string>();
     this.target.skills.map((skill) => {
-      endorsements.filter((endorsement) => {
-        if (endorsement.name === skill.name) {
-          skill.level = endorsement.level;
-          processedSkills.add(skill.name);
-        }
-      });
+        endorsements.filter((endorsement) => {
+            if (endorsement.name === skill.name) {
+                skill.level = endorsement.level;
+                processedSkills.add(skill.name);
+            }
+        });
     });
 
     // This will add the skills that have endorsements but
     // are not in the skills array
     endorsements.forEach((endorsement) => {
-      if (!processedSkills.has(endorsement.name)) {
-        this.target.skills.push({ ...endorsement, keywords: [] });
-        processedSkills.add(endorsement.name);
-      }
+        if (!processedSkills.has(endorsement.name)) {
+            this.target.skills.push({ ...endorsement, keywords: [] });
+            processedSkills.add(endorsement.name);
+        }
     });
 
     // Sort the skills by level
     this.target.skills.sort((a, b) => {
-      return b.level - a.level;
+        return b.level - a.level;
     });
   }
 

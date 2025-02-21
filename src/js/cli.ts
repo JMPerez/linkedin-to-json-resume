@@ -65,6 +65,15 @@ yauzl.open(zipFile, { lazyEntries: true }, async (err, zipfile) => {
             entries.unshift(profileEntry);
         }
 
+        // Ensure Skills.csv is processed before endorsements
+        const skillsIndex = entries.findIndex(
+            (entry) => entry.fileName === "Skills.csv"
+        );
+        if (skillsIndex !== -1) {
+            const [skillsEntry] = entries.splice(skillsIndex, 1);
+            entries.unshift(skillsEntry);
+        }
+
         // Process each file in the ZIP
         const promises = entries.map((entry) => {
             const content = contents[entry.fileName];
