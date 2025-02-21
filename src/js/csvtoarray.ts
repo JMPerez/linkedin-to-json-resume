@@ -3,6 +3,9 @@
 // arrays. The default delimiter is the comma, but this
 // can be overriden in the second argument.
 function CSVToArray(strData: string, strDelimiter : string = ',') {
+  // Ensure we have a string to work with
+  strData = strData.trim();
+
   // Create a regular expression to parse the CSV values.
   const objPattern = new RegExp(
     `(\\${strDelimiter}|\\r?\\n|\\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^"\\${strDelimiter}\\r\\n]*))`,
@@ -30,7 +33,7 @@ function CSVToArray(strData: string, strDelimiter : string = ',') {
 
     // Check to see if the given delimiter has a length
     // (is not the start of string) and if it matches
-    // field delimiter. If id does not, then we know
+    // field delimiter. If it does not, then we know
     // that this delimiter is a row delimiter.
     if (strMatchedDelimiter.length && strMatchedDelimiter !== strDelimiter) {
       // Since we have reached a new row of data,
@@ -59,8 +62,12 @@ function CSVToArray(strData: string, strDelimiter : string = ',') {
     );
   } while (true);
 
-  // Return the parsed data.
-  return arrData;
+  // Remove any empty rows (where all values are null, undefined, or empty string)
+  return arrData.filter(row =>
+    row.length > 0 && row.some(value =>
+      value !== null && value !== undefined && value.trim() !== ''
+    )
+  );
 }
 
 export default CSVToArray;

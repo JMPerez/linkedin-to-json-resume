@@ -1,5 +1,258 @@
 /* exported onLinkedInLoad */
 import CountryCodes from "./country-codes";
+import CSVToArray from './csvtoarray';
+import moment from 'moment';
+
+export interface ProcessorOptions {
+    linkedinToJsonResume: any;
+    content: string;
+}
+
+export const processors = {
+    "Skills.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const processedContent = content.replace(/"/g, "").trim();
+        const elements = processedContent.split("\n")
+            .filter(line => line.trim() !== '');
+        linkedinToJsonResume.processSkills(elements.slice(1));
+    },
+
+    "Education.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const education = elements
+            .slice(1)
+            .map((elem) => ({
+                schoolName: elem[0],
+                startDate: moment(elem[1], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD"),
+                endDate: elem[2] ? moment(elem[2], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD") : null,
+                notes: elem[3],
+                degree: elem[4],
+                activities: elem[5],
+            }));
+        linkedinToJsonResume.processEducation(
+            education.sort((e1, e2) => -e1.startDate.localeCompare(e2.startDate))
+        );
+    },
+
+    "Positions.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const positions = elements
+            .slice(1)
+            .map((elem) => ({
+                companyName: elem[0],
+                title: elem[1],
+                description: elem[2],
+                location: elem[3],
+                startDate: moment(elem[4], ["MMM YYYY", "MMMM YYYY"]).format("YYYY-MM-DD"),
+                endDate: elem[5] ? moment(elem[5], ["MMM YYYY", "MMMM YYYY"]).format("YYYY-MM-DD") : null,
+            }));
+        linkedinToJsonResume.processPosition(
+            positions.sort((p1, p2) => -p1.startDate.localeCompare(p2.startDate))
+        );
+    },
+
+    "Languages.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const languages = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                proficiency: elem[1],
+            }));
+        linkedinToJsonResume.processLanguages(languages);
+    },
+
+    "Recommendations Received.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const recommendations = elements
+            .slice(1)
+            .map((elem) => ({
+                recommenderFirstName: elem[0],
+                recommenderLastName: elem[1],
+                recommenderCompany: elem[2],
+                recommenderTitle: elem[3],
+                recommendationBody: elem[4],
+                recommendationDate: moment(elem[5]).format("YYYY-MM-DD"),
+                displayStatus: elem[6],
+            }))
+            .filter(
+                (recommendation) => recommendation.displayStatus === "VISIBLE"
+            );
+        linkedinToJsonResume.processReferences(recommendations);
+    },
+
+    "Profile.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const profile = {
+            firstName: elements[1][0],
+            lastName: elements[1][1],
+            maidenName: elements[1][2],
+            address: elements[1][3],
+            birthDate: elements[1][4],
+            headline: elements[1][5],
+            summary: elements[1][6],
+            industry: elements[1][7],
+            zipCode: elements[1][8],
+            geoLocation: elements[1][9],
+            twitterHandles: elements[1][10].replace('[', '').replace(']', ''),
+            websites: elements[1][11],
+            instantMessengers: elements[1][12]
+        };
+        linkedinToJsonResume.processProfile(profile);
+    },
+
+    "Email Addresses.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const emails = elements
+            .slice(1)
+            .map((elem) => ({
+                address: elem[0],
+                isPrimary: elem[2] === "Yes",
+            }))
+            .filter((email) => email.isPrimary);
+
+        if (emails.length) {
+            linkedinToJsonResume.processEmail(emails[0]);
+        }
+    },
+
+    "Interests.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        let interests = [];
+        elements.slice(1).forEach((elem) => {
+          interests = interests.concat(elem[0].split(","));
+        });
+        linkedinToJsonResume.processInterests(interests);
+    },
+
+    "Projects.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const projects = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                startDate: elem[3] ? moment(elem[3], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD") : null,
+                endDate: elem[4] ? moment(elem[4], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD") : null,
+                description: elem[1],
+                highlights: [],
+                url: elem[2],
+            }));
+        linkedinToJsonResume.processProjects(
+            projects.sort((p1, p2) => p1.startDate && p2.startDate ? -p1.startDate.localeCompare(p2.startDate) : 0)
+        );
+    },
+
+    "Publications.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const publications = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                date: moment(elem[1]).format("YYYY-MM-DD"),
+                description: elem[2],
+                publisher: elem[3],
+                url: elem[4],
+            }));
+        linkedinToJsonResume.processPublications(
+            publications.sort((p1, p2) => -p1.date.localeCompare(p2.date))
+        );
+    },
+
+    "PhoneNumbers.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        elements.shift();
+        const elementsWithNumber = elements.filter(
+          (element) => element[1]
+        );
+        if (elementsWithNumber.length > 0) {
+          const number = {
+            extension: elementsWithNumber[0][0],
+            number: elementsWithNumber[0][1],
+            type: elementsWithNumber[0][2],
+          };
+          linkedinToJsonResume.processPhoneNumber(number);
+        }
+    },
+
+    "Honors.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const awards = elements
+            .slice(1)
+            .map((elem) => ({
+                title: elem[0],
+                date: moment(elem[3], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD"),
+                awarder: "",
+                summary: elem[1],
+            }));
+        linkedinToJsonResume.processAwards(
+            awards.sort((p1, p2) => -p1.date.localeCompare(p2.date))
+        );
+    },
+
+    "Certifications.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const certificates = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                date: moment(elem[3], ["YYYY-MM", "MMMM YYYY"]).format("YYYY-MM-DD"),
+                issuer: elem[2],
+                summary: "",
+            }));
+        linkedinToJsonResume.processCertificates(
+            certificates.sort((p1, p2) => -p1.date.localeCompare(p2.date))
+        );
+    },
+
+    "Endorsement_Received_Info.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const endorsements: {name: string; level: number}[] = [];
+        elements.slice(1).forEach((elem) => {
+            const current = endorsements.find((endorsement) => endorsement.name === elem[1]);
+            if (current) {
+                current.level += 1;
+            } else {
+                endorsements.push({
+                    name: elem[1],
+                    level: 1,
+                });
+            }
+        });
+        linkedinToJsonResume.processEndorsements(endorsements);
+    },
+
+    "Causes You Care About.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const interests = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                keywords: [],
+            }));
+        linkedinToJsonResume.processFollows(interests);
+    },
+
+    "Company Follows.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const interests = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                keywords: [],
+            }));
+        linkedinToJsonResume.processFollows(interests);
+    },
+
+    "Hashtag_Follows.csv": ({ content, linkedinToJsonResume }: ProcessorOptions) => {
+        const elements = CSVToArray(content);
+        const interests = elements
+            .slice(1)
+            .map((elem) => ({
+                name: elem[0],
+                keywords: [],
+            }));
+        linkedinToJsonResume.processFollows(interests);
+    }
+};
 
 interface Output {
   basics?: object;
