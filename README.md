@@ -30,3 +30,11 @@ To build the project in production mode run:
 `npm run build`
 
 and serve the files from the `dist` folder.
+
+## Using the CLI
+
+You can also use the command-line interface to convert your LinkedIn export file.
+
+`npm run cli path/to/your/linkedin-export.zip`
+
+This will generate a `resume.json` file in your current directory.
