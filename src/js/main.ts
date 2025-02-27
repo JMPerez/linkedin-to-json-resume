@@ -22,7 +22,6 @@ interface Window {
 function fileDragHover(e) {
   e.stopPropagation();
   e.preventDefault();
-  e.target.className = e.type === "dragover" ? "hover" : "";
 }
 
 let linkedinToJsonResume;
@@ -39,7 +38,21 @@ downloadButton.addEventListener("click", () => {
     }
   });
 });
-downloadButton.style.display = "none";
+
+// adding action for the "Copy JSON" button
+const copyButton = document.getElementById("copyButton");
+const output = document.getElementById("output");
+copyButton.addEventListener("click", () => {
+  if (output) {
+    const textArea = document.createElement("textarea");
+    textArea.value = output.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+    alert("JSON copied to clipboard!");
+  }
+});
 
 // file selection
 function fileSelectHandler(e) {
@@ -124,7 +137,7 @@ function fileSelectHandler(e) {
           );
         }
         filedrag.innerHTML =
-          "Dropped! See the resulting JSON Resume at the bottom.";
+        "Dropped! See the resulting JSON Resume at the bottom.";
         const output = document.getElementById("output");
         output.innerHTML = JSON.stringify(
           linkedinToJsonResume.getOutput(),
@@ -134,6 +147,8 @@ function fileSelectHandler(e) {
         window.Prism.highlightElement(output);
         downloadButton.style.display = "block";
         document.getElementById("result").style.display = "block";
+        document.getElementById("hideOnSuccess").style.display = "none";
+        document.getElementById("select-file").classList.add("bg-olive");
       });
     });
   });
