@@ -6,11 +6,25 @@ import yauzl from 'yauzl';
 import CSVToArray from './csvtoarray';
 
 if (process.argv.length < 3) {
-    console.error('Usage: node cli.js <linkedin-export.zip>');
+    console.error('Usage: node cli.js <linkedin-export.zip> [<output-directory> (optional)]');
     process.exit(1);
 }
 
 const zipFile = process.argv[2];
+let outputDir = "";
+
+// Check if argument 3 is provided for the output directory
+if (process.argv.length >= 4)
+{
+    outputDir = process.argv[3];
+    console.log(`Using output directory: ${outputDir}`);
+    if (!fs.existsSync(outputDir))
+    {
+        console.error('Output directory "${outputDir}" does not exist.');
+        process.exit(1);
+    }
+}
+
 const linkedinToJsonResume = new LinkedInToJsonResume();
 
 // Process the ZIP file
@@ -92,8 +106,9 @@ yauzl.open(zipFile, { lazyEntries: true }, async (err, zipfile) => {
 
         // Save the result to a JSON file
         const output = linkedinToJsonResume.getOutput();
-        fs.writeFileSync('resume.json', JSON.stringify(output, null, 2));
-        console.log('Successfully generated resume.json file');
+        const outputPath = path.join(outputDir, 'resume.json');
+        fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+        console.log(`Successfully generated ${outputPath} file`);
     });
 
     zipfile.readEntry();
