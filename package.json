@@ -3,13 +3,22 @@
   "version": "2.0.0",
   "description": "LinkedIn to JSON Résumé",
   "main": "src/js/main.js",
+  "bin": "dist-cli/cli.js",
+  "files": [
+    "dist-cli",
+    "yarn.lock",
+    "package.json"
+  ],
   "scripts": {
     "start": "npm run develop",
     "develop": "parcel src/index.html",
+    "build:cli": "parcel build src/js/cli.ts --target node --no-source-maps --out-dir dist-cli && node scripts/add-shebang.js && chmod +x dist-cli/cli.js",
+    "build:web": "parcel build src/index.html --public-url ./",
     "build": "parcel build src/index.html --public-url ./",
     "lint": "./node_modules/jshint/bin/jshint src/js/*.js",
-    "test": "npm run build",
-    "cli": "ts-node --transpileOnly src/js/cli.ts"
+    "test": "npm run build:web",
+    "cli": "npm run build:cli && node dist-cli/cli.js",
+    "prepare": "npm run build:cli"
   },
   "repository": {
     "type": "git",
@@ -23,15 +32,13 @@
   "homepage": "https://github.com/JMPerez/linkedin-to-json-resume#readme",
   "devDependencies": {
     "@types/node": "^22.13.4",
-    "@types/yauzl": "^2.10.3",
     "jshint": "^2.13.6",
     "parcel-bundler": "^1.12.5",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
   "dependencies": {
     "isomorphic-unzip": "^1.1.1",
     "moment": "^2.30.1",
-    "yauzl": "^3.2.0"
+    "yauzl-promise": "^4.0.0"
   }
 }
